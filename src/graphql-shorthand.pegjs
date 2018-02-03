@@ -16,12 +16,23 @@ Interface
     { return { type: "INTERFACE", name, ...(description && { description }), fields }; }
 
 Scalar
-  = description:Comment? "interface" SPACE name:TypeIdent
+  = description:Comment? "scalar" SPACE name:TypeIdent
     { return { type: "SCALAR", name, ...(description && { description }) }; }
 
 Object
   = description:Comment? "type" SPACE name:TypeIdent interfaces:(COLON list:TypeList { return list; })? BEGIN_BODY fields:FieldList CLOSE_BODY
     { return { type: "TYPE", name, ...(description && { description }), fields, ...(interfaces && { interfaces }) }; }
+
+// add mutations
+//  type Mutation {
+//     createMessage(input: MessageInput): Message
+//     updateMessage(id: ID!, input: MessageInput): Message
+//   }
+//
+// add subscriptions
+// type Subscription {
+//   commentAdded(repoFullName: String!): Comment
+// }
 
 InputObject
   = description:Comment? "input" SPACE name:TypeIdent interfaces:(COLON list:TypeList { return list; })? BEGIN_BODY fields:InputFieldList CLOSE_BODY
@@ -62,6 +73,10 @@ Comment
     { return comment.join("").trim(); }
   / "/*" comment:(!"*/" char:CHAR { return char; })* "*/" EOL_SEP
     { return comment.join("").replace(/\n\s*[*]?\s*/g, " ").replace(/\s+/, " ").trim(); }
+
+// Directive
+//   = 
+
 
 Literal
   = StringLiteral / BooleanLiteral / NumericLiteral
