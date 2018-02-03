@@ -1,5 +1,5 @@
 start
-  = WS* definitions:(Enum / Interface / Object / InputObject)* WS*
+  = WS* definitions:(Enum / Interface / Object / InputObject / Scalar)* WS*
     { return definitions; }
 
 Ident = $([a-z]([a-z0-9_]i)*)
@@ -14,6 +14,10 @@ Enum
 Interface
   = description:Comment? "interface" SPACE name:TypeIdent BEGIN_BODY fields:FieldList CLOSE_BODY
     { return { type: "INTERFACE", name, ...(description && { description }), fields }; }
+
+Scalar
+  = description:Comment? "interface" SPACE name:TypeIdent
+    { return { type: "SCALAR", name, ...(description && { description }) }; }
 
 Object
   = description:Comment? "type" SPACE name:TypeIdent interfaces:(COLON list:TypeList { return list; })? BEGIN_BODY fields:FieldList CLOSE_BODY
