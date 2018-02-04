@@ -10,7 +10,7 @@
 }
 
 start
-  = WS* definitions:(Enum / Interface / Object / Union / InputObject / Scalar)* WS*
+  = WS* definitions:(Enum / Interface / Object / Union / InputObject / Scalar / Extend)* WS*
     { return definitions; }
 
 Ident = $([a-z]([a-z0-9_]i)*)
@@ -20,7 +20,7 @@ NumberIdent = $([.+-]?[0-9]+([.][0-9]+)?)
 
 Enum
   = description:Comment? "enum" SPACE name:TypeIdent BEGIN_BODY values:EnumIdentList CLOSE_BODY
-    { return { type: "ENUM", name, ...(description && { description }), values }; }
+    { return clean({ type: "ENUM", name, ...(description && { description }), values }); }
 
 Interface
   = description:Comment? "interface" SPACE name:TypeIdent impl:(IMPLEMENTS interfacename:TypeIdent { return interfacename; })? BEGIN_BODY fields:FieldList CLOSE_BODY
@@ -28,15 +28,24 @@ Interface
 
 Scalar
   = description:Comment? "scalar" SPACE name:TypeIdent
-    { return { type: "SCALAR", name, ...(description && { description }) }; }
+    { return clean({ type: "SCALAR", name, ...(description && { description }) }); }
 
 Union 
   = description:Comment? "union" SPACE name:TypeIdent EQUAL values:UnionList
-    { return { type: "UNION", name, ...(description && { description }), values }; }
+    { return clean({ type: "UNION", name, ...(description && { description }), values }); }
 
 Object
   = description:Comment? "type" SPACE name:TypeIdent interfaces:(COLON list:TypeList { return list; })? BEGIN_BODY fields:FieldList CLOSE_BODY
-    { return { type: "TYPE", name, ...(description && { description }), fields, ...(interfaces && { interfaces }) }; }
+    { return clean({ type: "TYPE", name, ...(description && { description }), fields, ...(interfaces && { interfaces }) }); }
+
+Extend
+  = description:Comment? "extend" SPACE "type" SPACE name:TypeIdent BEGIN_BODY fields:FieldList CLOSE_BODY
+    { return clean({ type: "EXTEND_TYPE", name, ...(description && { description }), fields }); }
+
+
+  // extend type Query {
+  //   foos: [Foo]!
+  // }
 
 // add mutations
 //  type Mutation {
