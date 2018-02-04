@@ -1,3 +1,14 @@
+{
+  function clean(obj) {
+    for (var propName in obj) { 
+      if (obj[propName] === null || obj[propName] === undefined) {
+        delete obj[propName];
+      }
+    }
+    return obj;
+  }
+}
+
 start
   = WS* definitions:(Enum / Interface / Object / Union / InputObject / Scalar)* WS*
     { return definitions; }
@@ -12,8 +23,8 @@ Enum
     { return { type: "ENUM", name, ...(description && { description }), values }; }
 
 Interface
-  = description:Comment? "interface" SPACE name:TypeIdent BEGIN_BODY fields:FieldList CLOSE_BODY
-    { return { type: "INTERFACE", name, ...(description && { description }), fields }; }
+  = description:Comment? "interface" SPACE name:TypeIdent impl:(IMPLEMENTS interfacename:TypeIdent { return interfacename; })? BEGIN_BODY fields:FieldList CLOSE_BODY
+    { return clean({ type: "INTERFACE", name, ...(description && { description }), fields, implements: impl }); }
 
 Scalar
   = description:Comment? "scalar" SPACE name:TypeIdent
@@ -140,6 +151,8 @@ CLOSE_BODY = WS* "}" WS*
 
 BEGIN_ARGS = WS* "(" WS*
 CLOSE_ARGS = WS* ")" WS*
+
+IMPLEMENTS = WS* "implements" WS*
 
 CHAR = .
 

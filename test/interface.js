@@ -26,3 +26,24 @@ test("interface definition", t => {
 
   return t.deepEqual(actual, expected);
 });
+
+test("interface definition implements", t => {
+  const [actual] = parse(`
+    // A character in the Star Wars Trilogy
+    interface Lazlo implements Character {
+      id: String!
+    }
+  `);
+
+  const expected = {
+    type: "INTERFACE",
+    name: "Lazlo",
+    description: "A character in the Star Wars Trilogy",
+    fields: {
+      id: { type: "String", required: true }
+    },
+    implements: "Character"
+  };
+
+  return t.deepEqual(actual, expected);
+});
