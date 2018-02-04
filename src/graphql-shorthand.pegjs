@@ -1,5 +1,5 @@
 start
-  = WS* definitions:(Enum / Interface / Object / InputObject / Scalar)* WS*
+  = WS* definitions:(Enum / Interface / Object / Union / InputObject / Scalar)* WS*
     { return definitions; }
 
 Ident = $([a-z]([a-z0-9_]i)*)
@@ -18,6 +18,10 @@ Interface
 Scalar
   = description:Comment? "scalar" SPACE name:TypeIdent
     { return { type: "SCALAR", name, ...(description && { description }) }; }
+
+Union 
+  = description:Comment? "union" SPACE name:TypeIdent EQUAL values:UnionList
+    { return { type: "UNION", name, ...(description && { description }), values }; }
 
 Object
   = description:Comment? "type" SPACE name:TypeIdent interfaces:(COLON list:TypeList { return list; })? BEGIN_BODY fields:FieldList CLOSE_BODY
@@ -48,6 +52,10 @@ TypeList
   = head:TypeIdent tail:(COMMA_SEP type:TypeIdent { return type; })*
     { return [head, ...tail]; }
 
+UnionList
+  = head:TypeIdent tail:(PIPE_SEP type:TypeIdent { return type; })*
+    { return [head, ...tail]; }
+
 Field
   = description:Comment? name:Ident args:(BEGIN_ARGS fields:FieldList CLOSE_ARGS { return fields; })? COLON type:ReturnType
     { return { [name]: { ...type, ...(args && { args }), ...(description && { description }) } }; }
@@ -74,6 +82,37 @@ Comment
   / "/*" comment:(!"*/" char:CHAR { return char; })* "*/" EOL_SEP
     { return comment.join("").replace(/\n\s*[*]?\s*/g, " ").replace(/\s+/, " ").trim(); }
 
+// scalar AlphaNumeric @stringValue(
+//   regex: "^[0-9a-zA-Z]*$"
+// )
+// @include(if: $show)
+// @_(countBy: "gender")
+// @_(get: "people") 
+// type RootQuery {
+//   secret: String @auth(roles: ["admin"])
+// }
+// type Foo {
+//   byte:Integer @numberValue(
+//     min: 0
+//     max: 255
+//   )
+// }
+// type Foo {
+//   bitMask: Integer @numberValue(
+//     oneOf: [ 1, 2, 4, 8, 16, 32, 64, 128 ]
+//   )
+// }
+// type ticTacToe {
+//   board: [[String!]!] @list(
+//     minItems: 3,
+//     maxItems: 3
+//     innerList: {
+//       minItems: 3,
+//       maxItems: 3
+//     }
+//   ) @stringValue(oneOf: [" ","X", "O"])
+// }
+// hello: String @upper
 // Directive
 //   = 
 
@@ -110,6 +149,7 @@ COLON = WS* ":" WS*
 EQUAL = WS* "=" WS*
 
 COMMA_SEP = WS* "," WS*
+PIPE_SEP = WS* "|" WS*
 EOL_SEP = SPACE* EOL SPACE*
 
 SPACE = [ \t]+

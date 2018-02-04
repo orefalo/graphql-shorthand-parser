@@ -1,7 +1,7 @@
 import test from "ava";
 import { parse } from "..";
 
-test("scalar definition", t => {
+test("directives definition", t => {
   const [actual] = parse(`
     // a test uuid scalar
     scalar UUID
