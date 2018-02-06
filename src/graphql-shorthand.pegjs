@@ -13,11 +13,11 @@ start
   = WS* definitions:(Enum / Interface / Object / Union / InputObject / Scalar / Extend)* WS*
     { return definitions; }
 
-Ident = $(([a-z0-9_]i)*)
-TypeIdent = $(([a-z0-9_]i)*)
+Ident = $([a-z]([a-z0-9_]i)*)
+TypeIdent = $([A-Z]([a-z0-9_]i)*)
 DirectiveIdent = $(([a-z0-9_]i)*)
 DirectiveValue = $(([a-z0-9_]i)*)
-EnumIdent = $(([a-z0-9_]i)*)
+EnumIdent = $([A-Z][A-Z0-9_]*)
 NumberIdent = $([.+-]?[0-9]+([.][0-9]+)?)
 
 Enum
