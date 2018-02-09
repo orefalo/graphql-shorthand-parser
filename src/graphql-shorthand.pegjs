@@ -17,9 +17,9 @@ start
 Ident = $([a-z0-9_]i*)
 // types start with a uppercase
 TypeIdent = $([a-z0-9_]i*)
-DirectiveIdent = $(([a-z0-9_]i)*)
-DirectiveValue = $(([a-z0-9_]i)*)
-EnumIdent = $(([A-Z0-9_]i)*)
+DirectiveIdent = $([a-z0-9_]i*)
+DirectiveValue = $([a-z0-9_]i*)
+EnumIdent = $([a-z0-9_]i*)
 NumberIdent = $([.+-]?[0-9]+([.][0-9]+)?)
 
 Enum
@@ -31,7 +31,7 @@ Interface
     { return clean({ type: "INTERFACE", name, description, fields, implements: impl }); }
 
 Scalar
-  = description:Comment? "scalar" SPACE name:TypeIdent directives:(SPACE d:DirectiveList {return d;})?
+  = description:CommentList? "scalar" SPACE name:TypeIdent directives:(SPACE d:DirectiveList  {return d;})? WS*
     { return clean({ type: "SCALAR", name, description, directives }); }
 
 Union 
@@ -40,21 +40,21 @@ Union
 
 Object
   = description:Comment? "type" SPACE name:TypeIdent interfaces:(COLON list:TypeList { return list; })? BEGIN_BODY fields:FieldList CLOSE_BODY
-    { return clean({ type: "TYPE", name, description, fields, ...(interfaces && { interfaces }) }); }
+    { return clean({ type: "TYPE", name, description, fields, interfaces }); }
 
 Extend
   = description:Comment? "extend" SPACE "type" SPACE name:TypeIdent BEGIN_BODY fields:FieldList CLOSE_BODY
     { return clean({ type: "EXTEND_TYPE", name, description, fields }); }
 
 Directive
-= "@" name:directiveName
-  props:("(" wscr* props:letters wscr* ")" { return props })?
-  { if(props)
+= "@" name:directiveName props:("(" wscr* d:letters wscr* ")" wscr* { return d; })?
+  { 
+    if(props)
       return {name: name, props: props};
     else
       return {name: name};
   }
-  
+
 Comment
   = LINE_COMMENT comment:(!EOL char:CHAR { return char; })* EOL_SEP
     { return comment.join("").trim(); }
@@ -75,6 +75,10 @@ Comment
 // type Subscription {
 //   commentAdded(repoFullName: String!): Comment
 // }
+
+CommentList
+  = head:Comment tail:(EOL c:Comment { return c; })* WS*
+    { return [head, ...tail].join('\n'); }
 
 InputObject
   = description:Comment? "input" SPACE name:TypeIdent interfaces:(COLON list:TypeList { return list; })? BEGIN_BODY fields:InputFieldList CLOSE_BODY
@@ -118,7 +122,6 @@ DirectiveList
   = head:Directive tail:(wscr* value:Directive { return value; })*
     { return [head, ...tail]; }
 
-
 Literal
   = StringLiteral / BooleanLiteral / NumericLiteral
 
@@ -135,7 +138,6 @@ BooleanLiteral
 NumericLiteral
   = value:NumberIdent { return Number(value.replace(/^[.]/, '0.')); }
 
-
 directiveName "directive name"
 = name:[a-z0-9_$]i* { return name.join('') }
 
@@ -148,24 +150,20 @@ letter
 wscr "whitespace"
 = [ \t\r\n]
 
-
 LINE_COMMENT = "#" / "//"
 
 BEGIN_BODY = WS* "{" WS*
 CLOSE_BODY = WS* "}" WS*
-
 BEGIN_ARGS = WS* "(" WS*
 CLOSE_ARGS = WS* ")" WS*
 
 IMPLEMENTS = WS* "implements" WS*
 
 CHAR = .
-
 WS = (SPACE / EOL)+
 
 COLON = WS* ":" WS*
 EQUAL = WS* "=" WS*
-
 COMMA_SEP = WS* "," WS*
 PIPE_SEP = WS* "|" WS*
 EOL_SEP = SPACE* EOL SPACE*
