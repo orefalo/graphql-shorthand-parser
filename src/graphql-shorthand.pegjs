@@ -13,50 +13,64 @@ start
   = WS* definitions:(Enum / Interface / Object / Union / InputObject / Scalar / Extend)* WS*
     { return definitions; }
 
-Ident = $([a-z]([a-z0-9_]i)*)
-TypeIdent = $([A-Z]([a-z0-9_]i)*)
+// fields start with a lowercase
+Ident = $([a-z0-9_]i*)
+// types start with a uppercase
+TypeIdent = $([a-z0-9_]i*)
 DirectiveIdent = $(([a-z0-9_]i)*)
 DirectiveValue = $(([a-z0-9_]i)*)
-EnumIdent = $([A-Z][A-Z0-9_]*)
+EnumIdent = $(([A-Z0-9_]i)*)
 NumberIdent = $([.+-]?[0-9]+([.][0-9]+)?)
 
 Enum
   = description:Comment? "enum" SPACE name:TypeIdent BEGIN_BODY values:EnumIdentList CLOSE_BODY
-    { return clean({ type: "ENUM", name, ...(description && { description }), values }); }
+    { return clean({ type: "ENUM", name, description, values }); }
 
 Interface
   = description:Comment? "interface" SPACE name:TypeIdent impl:(IMPLEMENTS interfacename:TypeIdent { return interfacename; })? BEGIN_BODY fields:FieldList CLOSE_BODY
-    { return clean({ type: "INTERFACE", name, ...(description && { description }), fields, implements: impl }); }
-
-//directives:(SPACE list:DirectiveList {return list})?
+    { return clean({ type: "INTERFACE", name, description, fields, implements: impl }); }
 
 Scalar
-  = description:Comment? "scalar" SPACE name:TypeIdent 
-    { return clean({ type: "SCALAR", name, ...(description && { description }) }); }
+  = description:Comment? "scalar" SPACE name:TypeIdent directives:(SPACE d:DirectiveList {return d;})?
+    { return clean({ type: "SCALAR", name, description, directives }); }
 
 Union 
   = description:Comment? "union" SPACE name:TypeIdent EQUAL values:UnionList
-    { return clean({ type: "UNION", name, ...(description && { description }), values }); }
+    { return clean({ type: "UNION", name, description, values }); }
 
 Object
   = description:Comment? "type" SPACE name:TypeIdent interfaces:(COLON list:TypeList { return list; })? BEGIN_BODY fields:FieldList CLOSE_BODY
-    { return clean({ type: "TYPE", name, ...(description && { description }), fields, ...(interfaces && { interfaces }) }); }
+    { return clean({ type: "TYPE", name, description, fields, ...(interfaces && { interfaces }) }); }
 
 Extend
   = description:Comment? "extend" SPACE "type" SPACE name:TypeIdent BEGIN_BODY fields:FieldList CLOSE_BODY
-    { return clean({ type: "EXTEND_TYPE", name, ...(description && { description }), fields }); }
+    { return clean({ type: "EXTEND_TYPE", name, description, fields }); }
 
+Directive
+= "@" name:directiveName
+  props:("(" wscr* props:letters wscr* ")" { return props })?
+  { if(props)
+      return {name: name, props: props};
+    else
+      return {name: name};
+  }
+  
+Comment
+  = LINE_COMMENT comment:(!EOL char:CHAR { return char; })* EOL_SEP
+    { return comment.join("").trim(); }
+  / "/*" comment:(!"*/" char:CHAR { return char; })* "*/" EOL_SEP
+    { return comment.join("").replace(/\n\s*[*]?\s*/g, " ").replace(/\s+/, " ").trim(); }
 
-  // extend type Query {
-  //   foos: [Foo]!
-  // }
+// extend type Query {
+//   foos: [Foo]!
+// }
 
 // add mutations
 //  type Mutation {
 //     createMessage(input: MessageInput): Message
 //     updateMessage(id: ID!, input: MessageInput): Message
 //   }
-//
+
 // add subscriptions
 // type Subscription {
 //   commentAdded(repoFullName: String!): Comment
@@ -64,7 +78,7 @@ Extend
 
 InputObject
   = description:Comment? "input" SPACE name:TypeIdent interfaces:(COLON list:TypeList { return list; })? BEGIN_BODY fields:InputFieldList CLOSE_BODY
-    { return { type: "INPUT", name, ...(description && { description }), fields, ...(interfaces && { interfaces }) }; }
+    { return clean({ type: "INPUT", name, description, fields, interfaces }); }
 
 ReturnType
   = type:TypeIdent required:"!"?
@@ -80,17 +94,9 @@ UnionList
   = head:TypeIdent tail:(PIPE_SEP type:TypeIdent { return type; })*
     { return [head, ...tail]; }
 
-Directive
-  = "@" name:DirectiveIdent value:("(" v:DirectiveValue ")" { return v; })?
-  { if(value) value=value.trim(); return { name, value }; }
-
-DirectiveList
-  = head:Directive tail:(EOL_SEP directive:Directive { return directive; })*
-    { return [head, ...tail].reduce((result, directive) => ({ ...result, ...directive }), {}); }
-
 Field
   = description:Comment? name:Ident args:(BEGIN_ARGS fields:FieldList CLOSE_ARGS { return fields; })? COLON type:ReturnType
-    { return { [name]: { ...type, ...(args && { args }), ...(description && { description }) } }; }
+    { return clean({ [name]: { ...type, ...(args && { args }), description } }); }
 
 FieldList
   = head:Field tail:(EOL_SEP field:Field { return field; })*
@@ -98,7 +104,7 @@ FieldList
 
 InputField
   = description:Comment? name:Ident args:(BEGIN_ARGS fields:FieldList CLOSE_ARGS { return fields; })? COLON type:ReturnType defaultValue:(EQUAL value:Literal { return value; })?
-    { return { [name]: { ...type, ...(args && { args }), ...(description && { description }), ...(defaultValue && { defaultValue }) } }; }
+    { return clean({ [name]: { ...type, ...(args && { args }), description, defaultValue } }); }
 
 InputFieldList
   = head:InputField tail:(EOL_SEP field:InputField { return field; })*
@@ -106,13 +112,12 @@ InputFieldList
 
 EnumIdentList
   = head:EnumIdent tail:(EOL_SEP value:EnumIdent { return value; })*
+    { return [head, ...tail].filter(String); }
+
+DirectiveList
+  = head:Directive tail:(wscr* value:Directive { return value; })*
     { return [head, ...tail]; }
 
-Comment
-  = LINE_COMMENT comment:(!EOL char:CHAR { return char; })* EOL_SEP
-    { return comment.join("").trim(); }
-  / "/*" comment:(!"*/" char:CHAR { return char; })* "*/" EOL_SEP
-    { return comment.join("").replace(/\n\s*[*]?\s*/g, " ").replace(/\s+/, " ").trim(); }
 
 Literal
   = StringLiteral / BooleanLiteral / NumericLiteral
@@ -129,6 +134,20 @@ BooleanLiteral
 
 NumericLiteral
   = value:NumberIdent { return Number(value.replace(/^[.]/, '0.')); }
+
+
+directiveName "directive name"
+= name:[a-z0-9_$]i* { return name.join('') }
+
+letters
+= letters:letter* { return letters ? letters.join('') : ""; }
+
+letter
+= (!')' letter:. { return letter;})
+
+wscr "whitespace"
+= [ \t\r\n]
+
 
 LINE_COMMENT = "#" / "//"
 

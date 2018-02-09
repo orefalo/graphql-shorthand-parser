@@ -79,7 +79,7 @@ test("directive with []", t => {
       {
         type: "DIRECTIVE",
         name: "numberValue",
-        value: "roneOf: [ 1, 2, 4, 8, 16, 32, 64, 128 ]"
+        value: "oneOf: [ 1, 2, 4, 8, 16, 32, 64, 128 ]"
       }
     ]
   };
