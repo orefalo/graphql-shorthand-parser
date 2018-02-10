@@ -7,19 +7,17 @@ test("directive on scalar", t => {
   scalar AlphaNumeric @stringValue(regex: "^[0-9a-zA-Z]*$")  
   `);
 
-  const expected = [
-    {
-       "type": "SCALAR",
-       "name": "AlphaNumeric",
-       "description": "a test AlphaNumeric scalar",
-       "directives": [
-          {
-             "name": "stringValue",
-             "content": "regex: \"^[0-9a-zA-Z]*$\""
-          }
-       ]
-    }
- ];
+  const expected = {
+    type: "SCALAR",
+    name: "AlphaNumeric",
+    description: "a test AlphaNumeric scalar",
+    directives: [
+      {
+        name: "stringValue",
+        content: 'regex: "^[0-9a-zA-Z]*$"'
+      }
+    ]
+  };
 
   return t.deepEqual(actual, expected);
 });
@@ -29,18 +27,16 @@ test("directive on include $variable", t => {
     scalar AlphaNumeric @include(if: $show)
   `);
 
-  const expected = [
-    {
-      type: "SCALAR",
-      name: "AlphaNumeric",
-      directives: [
-        {
-          name: "include",
-          content: "if: $show"
-        }
-      ]
-    }
-  ];
+  const expected = {
+    type: "SCALAR",
+    name: "AlphaNumeric",
+    directives: [
+      {
+        name: "include",
+        content: "if: $show"
+      }
+    ]
+  };
 
   return t.deepEqual(actual, expected);
 });
@@ -50,18 +46,16 @@ test("directive with @_", t => {
     scalar AlphaNumeric @_(countBy: "gender")
   `);
 
-  const expected = [
-    {
-      type: "SCALAR",
-      name: "AlphaNumeric",
-      directives: [
-        {
-          name: "_",
-          content: 'countBy: "gender"'
-        }
-      ]
-    }
-  ];
+  const expected = {
+    type: "SCALAR",
+    name: "AlphaNumeric",
+    directives: [
+      {
+        name: "_",
+        content: 'countBy: "gender"'
+      }
+    ]
+  };
 
   return t.deepEqual(actual, expected);
 });
@@ -72,19 +66,17 @@ test("directive with []", t => {
     scalar AlphaNumeric @numberValue( oneOf: [ 1, 2, 4, 8, 16, 32, 64, 128 ]  )
   `);
 
-  const expected = [
-    {
-      type: "SCALAR",
-      name: "AlphaNumeric",
-      description: "a test AlphaNumeric scalar",
-      directives: [
-        {
-          name: "numberValue",
-          content: "oneOf: [ 1, 2, 4, 8, 16, 32, 64, 128 ]  "
-        }
-      ]
-    }
-  ];
+  const expected = {
+    type: "SCALAR",
+    name: "AlphaNumeric",
+    description: "a test AlphaNumeric scalar",
+    directives: [
+      {
+        name: "numberValue",
+        content: "oneOf: [ 1, 2, 4, 8, 16, 32, 64, 128 ]  "
+      }
+    ]
+  };
 
   return t.deepEqual(actual, expected);
 });
@@ -94,22 +86,20 @@ test("multiple directives", t => {
     scalar AlphaNumeric @stringValue(oneOf: [" ","X", "O"]) @auth(roles: ["admin"])
   `);
 
-  const expected = [
-    {
-      type: "SCALAR",
-      name: "AlphaNumeric",
-      directives: [
-        {
-          name: "stringValue",
-          content: 'oneOf: [" ","X", "O"]'
-        },
-        {
-          name: "auth",
-          content: 'roles: ["admin"]'
-        }
-      ]
-    }
-  ];
+  const expected = {
+    type: "SCALAR",
+    name: "AlphaNumeric",
+    directives: [
+      {
+        name: "stringValue",
+        content: 'oneOf: [" ","X", "O"]'
+      },
+      {
+        name: "auth",
+        content: 'roles: ["admin"]'
+      }
+    ]
+  };
 
   return t.deepEqual(actual, expected);
 });
@@ -119,17 +109,15 @@ test("multiple directives", t => {
     scalar AlphaNumeric @upper
   `);
 
-  const expected = [
-    {
-      type: "SCALAR",
-      name: "AlphaNumeric",
-      directives: [
-        {
-          name: "upper"
-        }
-      ]
-    }
-  ];
+  const expected = {
+    type: "SCALAR",
+    name: "AlphaNumeric",
+    directives: [
+      {
+        name: "upper"
+      }
+    ]
+  };
 
   return t.deepEqual(actual, expected);
 });

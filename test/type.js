@@ -13,36 +13,32 @@ test("type definition", t => {
     }
   `);
 
-  const expected = [
-    {
-      "type": "TYPE",
-      "name": "Human",
-      "description": "A humanoid creature in the Star Wars universe",
-      "fields": {
-        "id": {
-          "type": "String",
-          "required": "!"
-        },
-        "name": {
-          "type": "String"
-        },
-        "friends": {
-          "type": "Character",
-          "array": true
-        },
-        "appearsIn": {
-          "type": "Episode",
-          "array": true
-        },
-        "homePlanet": {
-          "type": "String"
-        }
+  const expected = {
+    type: "TYPE",
+    name: "Human",
+    description: "A humanoid creature in the Star Wars universe",
+    fields: {
+      id: {
+        type: "String",
+        required: "!"
       },
-      "interfaces": [
-        "Character"
-      ]
-    }
-  ];
+      name: {
+        type: "String"
+      },
+      friends: {
+        type: "Character",
+        array: true
+      },
+      appearsIn: {
+        type: "Episode",
+        array: true
+      },
+      homePlanet: {
+        type: "String"
+      }
+    },
+    interfaces: ["Character"]
+  };
 
   return t.deepEqual(actual, expected);
 });
@@ -56,28 +52,41 @@ test("type definition with parameters", t => {
     }
   `);
 
-  const expected = [{
+  const expected = {
     type: "TYPE",
     name: "Query",
     fields: {
       hero: {
         type: "Character",
-        args: { episode: { type: "Episode" } }
+        args: {
+          episode: {
+            type: "Episode"
+          }
+        }
       },
       human: {
         type: "Human",
-        args: { id: { type: "String", required: true } }
+        args: {
+          id: {
+            type: "String",
+            required: "!"
+          }
+        }
       },
       droid: {
         type: "Droid",
-        args: { id: { type: "String", required: true } }
+        args: {
+          id: {
+            type: "String",
+            required: "!"
+          }
+        }
       }
     }
-  }];
+  };
 
   return t.deepEqual(actual, expected);
 });
-
 
 test("type definition with multiple interfaces", t => {
   const [actual] = parse(`
@@ -90,36 +99,31 @@ test("type definition with multiple interfaces", t => {
     }
   `);
 
-  const expected = [
-    {
-       "type": "TYPE",
-       "name": "Human",
-       "fields": {
-          "id": {
-             "type": "String",
-             "required": "!"
-          },
-          "name": {
-             "type": "String"
-          },
-          "friends": {
-             "type": "Character",
-             "array": true
-          },
-          "appearsIn": {
-             "type": "Episode",
-             "array": true
-          },
-          "homePlanet": {
-             "type": "String"
-          }
-       },
-       "interfaces": [
-          "Character",
-          "AnotherThing"
-       ]
-    }
- ];
+  const expected = {
+    type: "TYPE",
+    name: "Human",
+    fields: {
+      id: {
+        type: "String",
+        required: "!"
+      },
+      name: {
+        type: "String"
+      },
+      friends: {
+        type: "Character",
+        array: true
+      },
+      appearsIn: {
+        type: "Episode",
+        array: true
+      },
+      homePlanet: {
+        type: "String"
+      }
+    },
+    interfaces: ["Character", "AnotherThing"]
+  };
 
   return t.deepEqual(actual, expected);
 });
