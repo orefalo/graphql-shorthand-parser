@@ -50,7 +50,14 @@ Extend
   = description:CommentList? "extend" SPACE "type" SPACE name:TypeIdent BEGIN_BODY fields:FieldList CLOSE_BODY
     { return clean({ type: "EXTEND_TYPE", name, description, fields }); }
 
-Directive
+// directive @dateFormat(format: String) on FIELD_DEFINITION | FIELD
+//directive @resolvePromiseRejectList(values: [String!]!, message: [String!]!) on FIELD_DEFINITION
+//directive @auth(roles: [String]) on FIELD_DEFINITION
+Directive2
+  = description:CommentList? "directive" SPACE "on" SPACE name:TypeIdent BEGIN_BODY fields:FieldList CLOSE_BODY
+    { return clean({ type: "EXTEND_TYPE", name, description, fields }); }
+
+DirectiveTag
 //= "@" name:directiveName content:(!")" char:CHAR { return char; })* ")"
 //"(" comment:(!")" char:CHAR { return char; })* ")" EOL_SEP
 = "@" name:DirectiveIdent content:("(" SPACE_EOL* d:DirectiveParams ")" { return d; })?
@@ -119,7 +126,7 @@ EnumIdentList
     { return [head, ...tail].filter(String); }
 
 DirectiveList
-  = head:Directive tail:(SPACE value:Directive { return value; })*
+  = head:DirectiveTag tail:(SPACE value:DirectiveTag { return value; })*
     { return [head, ...tail]; }
 
 Literal

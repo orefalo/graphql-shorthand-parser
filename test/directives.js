@@ -1,6 +1,25 @@
 import test from "ava";
 import { parse } from "..";
 
+
+
+
+test("directive on scalar", t => {
+  const [actual] = parse(`
+  directive @auth(roles: [String]) on FIELD_DEFINITION
+  `);
+
+  const expected = {
+    type: "DIRECTIVE",
+    name: "auth",
+    content: 'roles: [String]',
+    on: "FIELD_DEFINITION"
+  };
+
+  return t.deepEqual(actual, expected);
+});
+
+
 test("directive on scalar", t => {
   const [actual] = parse(`
   // a test AlphaNumeric scalar
