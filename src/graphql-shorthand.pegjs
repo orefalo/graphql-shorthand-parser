@@ -1,8 +1,13 @@
 {
   function clean(obj) {
     for (var propName in obj) { 
-      if (obj[propName] === null || obj[propName] === undefined) {
+      const v = obj[propName];
+      if (v=== null || v === undefined) {
         delete obj[propName];
+      } else {
+        if(typeof v === 'object') {
+            clean(v);
+        }
       }
     }
     return obj;
@@ -14,20 +19,19 @@ start
     { return definitions; }
 
 // fields start with a lowercase
-Ident = $([a-z0-9_]i*)
+FieldIdent = $([a-z0-9_]i*)
 // types start with a uppercase
 TypeIdent = $([a-z0-9_]i*)
 DirectiveIdent = $([a-z0-9_]i*)
-DirectiveValue = $([a-z0-9_]i*)
 EnumIdent = $([a-z0-9_]i*)
 NumberIdent = $([.+-]?[0-9]+([.][0-9]+)?)
 
 Enum
-  = description:Comment? "enum" SPACE name:TypeIdent BEGIN_BODY values:EnumIdentList CLOSE_BODY
+  = description:CommentList? "enum" SPACE name:TypeIdent BEGIN_BODY values:EnumIdentList CLOSE_BODY
     { return clean({ type: "ENUM", name, description, values }); }
 
 Interface
-  = description:Comment? "interface" SPACE name:TypeIdent impl:(IMPLEMENTS interfacename:TypeIdent { return interfacename; })? BEGIN_BODY fields:FieldList CLOSE_BODY
+  = description:CommentList? "interface" SPACE name:TypeIdent impl:(IMPLEMENTS interfacename:TypeIdent { return interfacename; })? BEGIN_BODY fields:FieldList CLOSE_BODY
     { return clean({ type: "INTERFACE", name, description, fields, implements: impl }); }
 
 Scalar
@@ -35,27 +39,23 @@ Scalar
     { return clean({ type: "SCALAR", name, description, directives }); }
 
 Union 
-  = description:Comment? "union" SPACE name:TypeIdent EQUAL_SEP values:UnionList
+  = description:CommentList? "union" SPACE name:TypeIdent EQUAL_SEP values:UnionList
     { return clean({ type: "UNION", name, description, values }); }
 
 Object
-  = description:Comment? "type" SPACE name:TypeIdent interfaces:(COLON_SEP list:TypeList { return list; })? BEGIN_BODY fields:FieldList CLOSE_BODY
+  = description:CommentList? "type" SPACE name:TypeIdent interfaces:(COLON_SEP list:TypeList { return list; })? BEGIN_BODY fields:FieldList CLOSE_BODY
     { return clean({ type: "TYPE", name, description, fields, interfaces }); }
 
 Extend
-  = description:Comment? "extend" SPACE "type" SPACE name:TypeIdent BEGIN_BODY fields:FieldList CLOSE_BODY
+  = description:CommentList? "extend" SPACE "type" SPACE name:TypeIdent BEGIN_BODY fields:FieldList CLOSE_BODY
     { return clean({ type: "EXTEND_TYPE", name, description, fields }); }
 
 Directive
 //= "@" name:directiveName content:(!")" char:CHAR { return char; })* ")"
 //"(" comment:(!")" char:CHAR { return char; })* ")" EOL_SEP
-= "@" name:directiveName content:("(" SPACE_EOL* d:letters ")" { return d; })?
-  { 
-    if(content)
-      return {name: name, content: content};
-    else
-      return {name: name};
-  }
+= "@" name:DirectiveIdent content:("(" SPACE_EOL* d:DirectiveParams ")" { return d; })?
+  { return content? {name, content}:{name}; }
+
 
 Comment
   = LINE_COMMENT comment:(!EOL char:CHAR { return char; })* EOL_SEP
@@ -83,14 +83,12 @@ CommentList
     { return [head, ...tail].join('\n'); }
 
 InputObject
-  = description:Comment? "input" SPACE name:TypeIdent interfaces:(COLON_SEP list:TypeList { return list; })? BEGIN_BODY fields:InputFieldList CLOSE_BODY
+  = description:CommentList? "input" SPACE name:TypeIdent interfaces:(COLON_SEP list:TypeList { return list; })? BEGIN_BODY fields:InputFieldList CLOSE_BODY
     { return clean({ type: "INPUT", name, description, fields, interfaces }); }
 
 ReturnType
-  = type:TypeIdent required:"!"?
-    { return { type, ...(required && { required: !!required }) }; }
-  / "[" type:TypeIdent "]"
-    { return { type, list: true }; }
+  =  "[" type:TypeIdent noemptyelement:"!"? "]" required:"!"? { return clean({ type, array: true, noemptyelement, required }); }
+      /  type:TypeIdent required:"!"? { return clean({ type, required }); }
 
 TypeList
   = head:TypeIdent tail:(COMMA_SEP type:TypeIdent { return type; })*
@@ -101,15 +99,15 @@ UnionList
     { return [head, ...tail]; }
 
 Field
-  = description:Comment? name:Ident args:(BEGIN_ARGS fields:FieldList CLOSE_ARGS { return fields; })? COLON_SEP type:ReturnType
+  = description:CommentList? name:FieldIdent args:(BEGIN_ARGS fields:FieldList CLOSE_ARGS { return fields; })? COLON_SEP type:ReturnType
     { return clean({ [name]: { ...type, ...(args && { args }), description } }); }
 
 FieldList
-  = head:Field tail:(EOL_SEP field:Field { return field; })*
+  = head:Field tail:(EOL_SEP* field:Field { return field; })*
     { return [head, ...tail].reduce((result, field) => ({ ...result, ...field }), {}); }
 
 InputField
-  = description:Comment? name:Ident args:(BEGIN_ARGS fields:FieldList CLOSE_ARGS { return fields; })? COLON_SEP type:ReturnType defaultValue:(EQUAL_SEP value:Literal { return value; })?
+  = description:CommentList? name:FieldIdent args:(BEGIN_ARGS fields:FieldList CLOSE_ARGS { return fields; })? COLON_SEP type:ReturnType defaultValue:(EQUAL_SEP value:Literal { return value; })?
     { return clean({ [name]: { ...type, ...(args && { args }), description, defaultValue } }); }
 
 InputFieldList
@@ -117,7 +115,7 @@ InputFieldList
     { return [head, ...tail].reduce((result, field) => ({ ...result, ...field }), {}); }
 
 EnumIdentList
-  = head:EnumIdent tail:(EOL_SEP value:EnumIdent { return value; })*
+  = head:EnumIdent tail:(SPACE_EOL value:EnumIdent { return value; })*
     { return [head, ...tail].filter(String); }
 
 DirectiveList
@@ -140,10 +138,7 @@ BooleanLiteral
 NumericLiteral
   = value:NumberIdent { return Number(value.replace(/^[.]/, '0.')); }
 
-directiveName "directive name"
-= name:[a-z0-9_$]i*  { return name.join('') }
-
-letters
+DirectiveParams
 = letters:(!')' l:. { return l;})* { return letters ? letters.join('') : ""; }
 
 CHAR = .
@@ -163,6 +158,3 @@ EQUAL_SEP = SPACE_EOL* "=" SPACE_EOL*
 COMMA_SEP = SPACE_EOL* "," SPACE_EOL*
 PIPE_SEP = SPACE_EOL* "|" SPACE_EOL*
 EOL_SEP = SPACE* EOL SPACE*
-
-
-

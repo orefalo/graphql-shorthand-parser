@@ -70,14 +70,30 @@ test("add comments as field description", t => {
     type: "TYPE",
     name: "Human",
     description: "A humanoid creature in the Star Wars universe",
-    interfaces: ["Character"],
     fields: {
-      id: { type: "String", required: true, description: "the id" },
-      name: { type: "String", description: "the name" },
-      friends: { type: "Character", list: true },
-      appearsIn: { type: "Episode", list: true },
-      homePlanet: { type: "String", description: "the home planet" }
-    }
+      id: {
+        type: "String",
+        required: "!",
+        description: "the id"
+      },
+      name: {
+        type: "String",
+        description: "the name"
+      },
+      friends: {
+        type: "Character",
+        array: true
+      },
+      appearsIn: {
+        type: "Episode",
+        array: true
+      },
+      homePlanet: {
+        type: "String",
+        description: "the home planet"
+      }
+    },
+    interfaces: ["Character"]
   };
 
   return t.deepEqual(actual, expected);

@@ -13,19 +13,36 @@ test("type definition", t => {
     }
   `);
 
-  const expected = {
-    type: "TYPE",
-    name: "Human",
-    description: "A humanoid creature in the Star Wars universe",
-    interfaces: ["Character"],
-    fields: {
-      id: { type: "String", required: true },
-      name: { type: "String" },
-      friends: { type: "Character", list: true },
-      appearsIn: { type: "Episode", list: true },
-      homePlanet: { type: "String" }
+  const expected = [
+    {
+      "type": "TYPE",
+      "name": "Human",
+      "description": "A humanoid creature in the Star Wars universe",
+      "fields": {
+        "id": {
+          "type": "String",
+          "required": "!"
+        },
+        "name": {
+          "type": "String"
+        },
+        "friends": {
+          "type": "Character",
+          "array": true
+        },
+        "appearsIn": {
+          "type": "Episode",
+          "array": true
+        },
+        "homePlanet": {
+          "type": "String"
+        }
+      },
+      "interfaces": [
+        "Character"
+      ]
     }
-  };
+  ];
 
   return t.deepEqual(actual, expected);
 });
@@ -39,7 +56,7 @@ test("type definition with parameters", t => {
     }
   `);
 
-  const expected = {
+  const expected = [{
     type: "TYPE",
     name: "Query",
     fields: {
@@ -56,7 +73,7 @@ test("type definition with parameters", t => {
         args: { id: { type: "String", required: true } }
       }
     }
-  };
+  }];
 
   return t.deepEqual(actual, expected);
 });
@@ -73,18 +90,36 @@ test("type definition with multiple interfaces", t => {
     }
   `);
 
-  const expected = {
-    type: "TYPE",
-    name: "Human",
-    interfaces: ["Character", "AnotherThing"],
-    fields: {
-      id: { type: "String", required: true },
-      name: { type: "String" },
-      friends: { type: "Character", list: true },
-      appearsIn: { type: "Episode", list: true },
-      homePlanet: { type: "String" }
+  const expected = [
+    {
+       "type": "TYPE",
+       "name": "Human",
+       "fields": {
+          "id": {
+             "type": "String",
+             "required": "!"
+          },
+          "name": {
+             "type": "String"
+          },
+          "friends": {
+             "type": "Character",
+             "array": true
+          },
+          "appearsIn": {
+             "type": "Episode",
+             "array": true
+          },
+          "homePlanet": {
+             "type": "String"
+          }
+       },
+       "interfaces": [
+          "Character",
+          "AnotherThing"
+       ]
     }
-  };
+ ];
 
   return t.deepEqual(actual, expected);
 });

@@ -12,17 +12,19 @@ test("interface definition", t => {
     }
   `);
 
-  const expected = {
-    type: "INTERFACE",
-    name: "Character",
-    description: "A character in the Star Wars Trilogy",
-    fields: {
-      id: { type: "String", required: true },
-      name: { type: "String" },
-      friends: { type: "Character", list: true },
-      appearsIn: { type: "Episode", list: true }
+  const expected = [
+    {
+      type: "INTERFACE",
+      name: "Character",
+      description: "A character in the Star Wars Trilogy",
+      fields: {
+        id: { type: "String", required: true },
+        name: { type: "String" },
+        friends: { type: "Character", array: true },
+        appearsIn: { type: "Episode", array: true }
+      }
     }
-  };
+  ];
 
   return t.deepEqual(actual, expected);
 });
@@ -35,15 +37,17 @@ test("interface definition implements", t => {
     }
   `);
 
-  const expected = {
-    type: "INTERFACE",
-    name: "Lazlo",
-    description: "A character in the Star Wars Trilogy",
-    fields: {
-      id: { type: "String", required: true }
-    },
-    implements: "Character"
-  };
+  const expected = [
+    {
+      type: "INTERFACE",
+      name: "Lazlo",
+      description: "A character in the Star Wars Trilogy",
+      fields: {
+        id: { type: "String", required: true }
+      },
+      implements: "Character"
+    }
+  ];
 
   return t.deepEqual(actual, expected);
 });
