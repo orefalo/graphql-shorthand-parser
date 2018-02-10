@@ -20,7 +20,7 @@ test("type definition", t => {
     fields: {
       id: {
         type: "String",
-        required: "!"
+        required: true
       },
       name: {
         type: "String"
@@ -69,7 +69,7 @@ test("type definition with parameters", t => {
         args: {
           id: {
             type: "String",
-            required: "!"
+            required: true
           }
         }
       },
@@ -78,7 +78,7 @@ test("type definition with parameters", t => {
         args: {
           id: {
             type: "String",
-            required: "!"
+            required: true
           }
         }
       }
@@ -105,7 +105,7 @@ test("type definition with multiple interfaces", t => {
     fields: {
       id: {
         type: "String",
-        required: "!"
+        required: true
       },
       name: {
         type: "String"
@@ -127,3 +127,28 @@ test("type definition with multiple interfaces", t => {
 
   return t.deepEqual(actual, expected);
 });
+
+
+test("type definition with [!]!", t => {
+  const [actual] = parse(`
+    type Human  {
+      friends: [Character!]!
+    }
+  `);
+
+  const expected =  {
+    "type": "TYPE",
+    "name": "Human",
+    "fields": {
+       "friends": {
+          "type": "Character",
+          "array": true,
+          "noemptyelement": true,
+          "required": true
+       }
+    }
+ };
+
+  return t.deepEqual(actual, expected);
+});
+

@@ -87,8 +87,8 @@ InputObject
     { return clean({ type: "INPUT", name, description, fields, interfaces }); }
 
 ReturnType
-  =  "[" type:TypeIdent noemptyelement:"!"? "]" required:"!"? { return clean({ type, array: true, noemptyelement, required }); }
-      /  type:TypeIdent required:"!"? { return clean({ type, required }); }
+  =  "[" type:TypeIdent noemptyelement:"!"? "]" required:"!"? { return { type, array: true, ...(noemptyelement && { noemptyelement: !!noemptyelement }), ...(required && { required: !!required }) } }
+      /  type:TypeIdent required:"!"? { return { type,  ...(required && { required: !!required }) } }
 
 TypeList
   = head:TypeIdent tail:(COMMA_SEP type:TypeIdent { return type; })*

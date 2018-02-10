@@ -73,7 +73,7 @@ test("add comments as field description", t => {
     fields: {
       id: {
         type: "String",
-        required: "!",
+        required: true,
         description: "the id"
       },
       name: {
