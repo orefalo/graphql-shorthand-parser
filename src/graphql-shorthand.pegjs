@@ -15,7 +15,7 @@
 }
 
 start
-  = SPACE_EOL* definitions:(Enum / Interface / Object / Union / InputObject / Scalar / Extend)* SPACE_EOL*
+  = SPACE_EOL* definitions:(Enum / Interface / Object / Union / InputObject / Scalar / Extend / Directive)* SPACE_EOL*
     { return definitions; }
 
 // fields start with a lowercase
@@ -53,9 +53,9 @@ Extend
 // directive @dateFormat(format: String) on FIELD_DEFINITION | FIELD
 //directive @resolvePromiseRejectList(values: [String!]!, message: [String!]!) on FIELD_DEFINITION
 //directive @auth(roles: [String]) on FIELD_DEFINITION
-Directive2
-  = description:CommentList? "directive" SPACE "on" SPACE name:TypeIdent BEGIN_BODY fields:FieldList CLOSE_BODY
-    { return clean({ type: "EXTEND_TYPE", name, description, fields }); }
+Directive
+  = description:CommentList? "directive" SPACE directive:DirectiveTag SPACE "on" SPACE on:DirectiveOnList
+    { return clean({ type: "DIRECTIVE", directive, description, on }); }
 
 DirectiveTag
 //= "@" name:directiveName content:(!")" char:CHAR { return char; })* ")"
@@ -70,9 +70,7 @@ Comment
   / "/*" comment:(!"*/" char:CHAR { return char; })* "*/" EOL_SEP
     { return comment.join("").replace(/\n\s*[*]?\s*/g, " ").replace(/\s+/, " ").trim(); }
 
-// extend type Query {
-//   foos: [Foo]!
-// }
+
 
 // add mutations
 //  type Mutation {
@@ -129,6 +127,10 @@ DirectiveList
   = head:DirectiveTag tail:(SPACE value:DirectiveTag { return value; })*
     { return [head, ...tail]; }
 
+DirectiveOnList
+  = head:DirectiveOn tail:(PIPE_SEP value:DirectiveOn { return value; })*
+    { return [head, ...tail]; }
+
 Literal
   = StringLiteral / BooleanLiteral / NumericLiteral
 
@@ -139,14 +141,16 @@ DoubleStringCharacter
   = !('"' / "\\" / EOL) . { return text(); }
 
 BooleanLiteral
-  = "true"  { return true }
-  / "false"  { return false }
+  = "true"  { return true } / "false"  { return false }
 
 NumericLiteral
   = value:NumberIdent { return Number(value.replace(/^[.]/, '0.')); }
 
 DirectiveParams
-= letters:(!')' l:. { return l;})* { return letters ? letters.join('') : ""; }
+= letters:(!')' l:CHAR { return l;})* { return letters ? letters.join('') : ""; }
+
+DirectiveOn
+= "FIELD_DEFINITION"  { return "schema" } / "FIELD"  { return "query" }
 
 CHAR = .
 LINE_COMMENT = "#" / "//"

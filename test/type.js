@@ -1,6 +1,7 @@
 import test from "ava";
 import { parse } from "..";
 
+
 test("type definition", t => {
   const [actual] = parse(`
     // A humanoid creature in the Star Wars universe
@@ -128,7 +129,6 @@ test("type definition with multiple interfaces", t => {
   return t.deepEqual(actual, expected);
 });
 
-
 test("type definition with [!]!", t => {
   const [actual] = parse(`
     type Human  {
@@ -136,19 +136,18 @@ test("type definition with [!]!", t => {
     }
   `);
 
-  const expected =  {
-    "type": "TYPE",
-    "name": "Human",
-    "fields": {
-       "friends": {
-          "type": "Character",
-          "array": true,
-          "noemptyelement": true,
-          "required": true
-       }
+  const expected = {
+    type: "TYPE",
+    name: "Human",
+    fields: {
+      friends: {
+        type: "Character",
+        array: true,
+        noemptyelement: true,
+        required: true
+      }
     }
- };
+  };
 
   return t.deepEqual(actual, expected);
 });
-
