@@ -172,3 +172,8 @@ type Query {
   }
 ]
 ```
+
+### Authors
+
+* Cameron Hunter - [Origin code](https://github.com/cameronhunter/graphql-shorthand-parser)
+* Olivier Refalo - [2018 refresh](https://github.com/orefalo/graphql-shorthand-parser)
