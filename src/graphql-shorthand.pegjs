@@ -46,6 +46,10 @@ Object
   = description:CommentList? "type" SPACE name:TypeIdent implts:(IMPLEMENTS interfacename:TypeList { return interfacename; })? BEGIN_BODY fields:FieldList CLOSE_BODY
     { return clean({ type: "TYPE", name, description, fields, implements:implts }); }
 
+Schema
+  = description:CommentList? "schema" BEGIN_BODY fields:FieldList CLOSE_BODY
+    { return clean({ type: "SCHEMA", description, fields }); }
+
 Extend
   = description:CommentList? "extend" SPACE "type" SPACE name:TypeIdent BEGIN_BODY fields:FieldList CLOSE_BODY
     { return clean({ type: "EXTEND_TYPE", name, description, fields }); }
@@ -63,14 +67,11 @@ DirectiveTag
 = "@" name:DirectiveIdent content:("(" SPACE_EOL* d:DirectiveParams ")" { return d; })?
   { return content? {name, content}:{name}; }
 
-
 Comment
   = LINE_COMMENT comment:(!EOL char:CHAR { return char; })* EOL_SEP
     { return comment.join("").trim(); }
   / "/*" comment:(!"*/" char:CHAR { return char; })* "*/" EOL_SEP
     { return comment.join("").replace(/\n\s*[*]?\s*/g, " ").replace(/\s+/, " ").trim(); }
-
-
 
 // add mutations
 //  type Mutation {
