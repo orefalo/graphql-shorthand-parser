@@ -1,7 +1,6 @@
 import test from "ava";
 import { parse } from "..";
 
-
 test("type definition", t => {
   const [actual] = parse(`
     // A humanoid creature in the Star Wars universe
@@ -145,6 +144,36 @@ test("type definition with [!]!", t => {
         array: true,
         noemptyelement: true,
         required: true
+      }
+    }
+  };
+
+  return t.deepEqual(actual, expected);
+});
+
+test("type definition with default value", t => {
+  const [actual] = parse(`
+  type Query {
+    identification(
+      type: String = "personal-identity-code"
+    ): [Identification]!
+  }
+  `);
+
+  const expected = {
+    type: "TYPE",
+    name: "Query",
+    fields: {
+      identification: {
+        type: "Identification",
+        array: true,
+        required: true,
+        args: {
+          type: {
+            type: "String",
+            defaultValue: "personal-identity-code"
+          }
+        }
       }
     }
   };

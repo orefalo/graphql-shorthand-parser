@@ -104,15 +104,15 @@ UnionList
     { return [head, ...tail]; }
 
 Field
-  = description:CommentList? name:FieldIdent args:(BEGIN_ARGS fields:FieldList CLOSE_ARGS { return fields; })? COLON_SEP type:ReturnType
-    { return clean({ [name]: { ...type, ...(args && { args }), description } }); }
+  = description:CommentList? name:FieldIdent args:(BEGIN_ARGS fields:FieldList CLOSE_ARGS { return fields; })? COLON_SEP type:ReturnType defaultValue:(EQUAL_SEP v:Literal { return v; })?
+    { return clean({ [name]: { ...type, ...(args && { args }), description, defaultValue } }); }
 
 FieldList
   = head:Field tail:(EOL_SEP* field:Field { return field; })*
     { return [head, ...tail].reduce((result, field) => ({ ...result, ...field }), {}); }
 
 InputField
-  = description:CommentList? name:FieldIdent args:(BEGIN_ARGS fields:FieldList CLOSE_ARGS { return fields; })? COLON_SEP type:ReturnType defaultValue:(EQUAL_SEP value:Literal { return value; })?
+  = description:CommentList? name:FieldIdent args:(BEGIN_ARGS fields:FieldList CLOSE_ARGS { return fields; })? COLON_SEP type:ReturnType defaultValue:(EQUAL_SEP v:Literal { return v; })?
     { return clean({ [name]: { ...type, ...(args && { args }), description, defaultValue } }); }
 
 InputFieldList
