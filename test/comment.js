@@ -54,7 +54,7 @@ test("add '/**/' comments as description", t => {
 test("add comments as field description", t => {
   const [actual] = parse(`
     // A humanoid creature in the Star Wars universe
-    type Human : Character {
+    type Human implements Character {
       # the id
       id: String!
       // the name
@@ -93,7 +93,7 @@ test("add comments as field description", t => {
         description: "the home planet"
       }
     },
-    interfaces: ["Character"]
+    implements: ["Character"]
   };
 
   return t.deepEqual(actual, expected);

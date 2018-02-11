@@ -5,7 +5,7 @@ import { parse } from "..";
 test("type definition", t => {
   const [actual] = parse(`
     // A humanoid creature in the Star Wars universe
-    type Human : Character {
+    type Human implements Character {
       id: String!
       name: String
       friends: [Character]
@@ -38,7 +38,7 @@ test("type definition", t => {
         type: "String"
       }
     },
-    interfaces: ["Character"]
+    implements: ["Character"]
   };
 
   return t.deepEqual(actual, expected);
@@ -91,7 +91,7 @@ test("type definition with parameters", t => {
 
 test("type definition with multiple interfaces", t => {
   const [actual] = parse(`
-    type Human : Character, AnotherThing {
+    type Human implements Character, AnotherThing {
       id: String!
       name: String
       friends: [Character]
@@ -123,7 +123,7 @@ test("type definition with multiple interfaces", t => {
         type: "String"
       }
     },
-    interfaces: ["Character", "AnotherThing"]
+    implements: ["Character", "AnotherThing"]
   };
 
   return t.deepEqual(actual, expected);

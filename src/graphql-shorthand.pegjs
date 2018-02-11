@@ -31,20 +31,20 @@ Enum
     { return clean({ type: "ENUM", name, description, values }); }
 
 Interface
-  = description:CommentList? "interface" SPACE name:TypeIdent impl:(IMPLEMENTS interfacename:TypeIdent { return interfacename; })? BEGIN_BODY fields:FieldList CLOSE_BODY
-    { return clean({ type: "INTERFACE", name, description, fields, implements: impl }); }
+  = description:CommentList? "interface" SPACE name:TypeIdent implts:(IMPLEMENTS interfacename:TypeList { return interfacename; })? BEGIN_BODY fields:FieldList CLOSE_BODY
+    { return clean({ type: "INTERFACE", name, description, fields, implements:implts }); }
 
 Scalar
   = description:CommentList? "scalar" SPACE name:TypeIdent directives:(SPACE d:DirectiveList  {return d;})? SPACE_EOL*
     { return clean({ type: "SCALAR", name, description, directives }); }
 
 Union 
-  = description:CommentList? "union" SPACE name:TypeIdent EQUAL_SEP values:UnionList
+  = description:CommentList? "union" SPACE name:TypeIdent EQUAL_SEP values:UnionList SPACE_EOL*
     { return clean({ type: "UNION", name, description, values }); }
 
 Object
-  = description:CommentList? "type" SPACE name:TypeIdent interfaces:(COLON_SEP list:TypeList { return list; })? BEGIN_BODY fields:FieldList CLOSE_BODY
-    { return clean({ type: "TYPE", name, description, fields, interfaces }); }
+  = description:CommentList? "type" SPACE name:TypeIdent implts:(IMPLEMENTS interfacename:TypeList { return interfacename; })? BEGIN_BODY fields:FieldList CLOSE_BODY
+    { return clean({ type: "TYPE", name, description, fields, implements:implts }); }
 
 Extend
   = description:CommentList? "extend" SPACE "type" SPACE name:TypeIdent BEGIN_BODY fields:FieldList CLOSE_BODY
@@ -54,7 +54,7 @@ Extend
 //directive @resolvePromiseRejectList(values: [String!]!, message: [String!]!) on FIELD_DEFINITION
 //directive @auth(roles: [String]) on FIELD_DEFINITION
 Directive
-  = description:CommentList? "directive" SPACE directive:DirectiveTag SPACE "on" SPACE on:DirectiveOnList
+  = description:CommentList? "directive" SPACE directive:DirectiveTag SPACE "on" SPACE on:DirectiveOnList SPACE_EOL*
     { return clean({ type: "DIRECTIVE", directive, description, on }); }
 
 DirectiveTag

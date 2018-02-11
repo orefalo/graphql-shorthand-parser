@@ -42,7 +42,7 @@ test("interface definition implements", t => {
     fields: {
       id: { type: "String", required: true }
     },
-    implements: "Character"
+    implements: ["Character"]
   };
 
   return t.deepEqual(actual, expected);
