@@ -15,7 +15,7 @@
 }
 
 start
-  = SPACE_EOL* definitions:(Enum / Interface / Object / Union / InputObject / Scalar / Extend / Directive)* SPACE_EOL*
+  = SPACE_EOL* definitions:(Enum / Interface / Object / Union / InputObject / Scalar / Extend / Directive / Schema)* SPACE_EOL*
     { return definitions; }
 
 // fields start with a lowercase
@@ -72,18 +72,7 @@ Comment
     { return comment.join("").trim(); }
   / "/*" comment:(!"*/" char:CHAR { return char; })* "*/" EOL_SEP
     { return comment.join("").replace(/\n\s*[*]?\s*/g, " ").replace(/\s+/, " ").trim(); }
-
-// add mutations
-//  type Mutation {
-//     createMessage(input: MessageInput): Message
-//     updateMessage(id: ID!, input: MessageInput): Message
-//   }
-
-// add subscriptions
-// type Subscription {
-//   commentAdded(repoFullName: String!): Comment
-// }
-
+  
 CommentList
   = head:Comment tail:(EOL? c:Comment { return c; })*
     { return [head, ...tail].join('\n'); }
@@ -105,8 +94,8 @@ UnionList
     { return [head, ...tail]; }
 
 Field
-  = description:CommentList? name:FieldIdent args:(BEGIN_ARGS fields:FieldList CLOSE_ARGS { return fields; })? COLON_SEP type:ReturnType defaultValue:(EQUAL_SEP v:Literal { return v; })?
-    { return clean({ [name]: { ...type, ...(args && { args }), description, defaultValue } }); }
+  = description:CommentList? name:FieldIdent args:(BEGIN_ARGS fields:FieldList CLOSE_ARGS { return fields; })? COLON_SEP type:ReturnType defaultValue:(EQUAL_SEP v:Literal { return v; })? directives:(SPACE d:DirectiveList  {return d;})? SPACE_EOL*
+    { return clean({ [name]: { ...type, ...(args && { args }), description, defaultValue, directives } }); }
 
 FieldList
   = head:Field tail:(EOL_SEP* field:Field { return field; })*

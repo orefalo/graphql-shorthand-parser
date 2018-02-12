@@ -139,6 +139,36 @@ test("multiple directives", t => {
   return t.deepEqual(actual, expected);
 });
 
+test("directive on parametrized field", t => {
+  const [actual] = parse(`
+  type Query {
+    customerAccount(accountId: String): CustomerAccount @auth
+    }
+  `);
+
+  const expected = {
+    type: "TYPE",
+    name: "Query",
+    fields: {
+      customerAccount: {
+        type: "CustomerAccount",
+        args: {
+          accountId: {
+            type: "String"
+          }
+        },
+        directives: [
+          {
+            name: "auth"
+          }
+        ]
+      }
+    }
+  };
+
+  return t.deepEqual(actual, expected);
+});
+
 // type ticTacToe {
 //   board: [[String!]!] @list(
 //     minItems: 3,

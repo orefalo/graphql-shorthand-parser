@@ -151,6 +151,35 @@ test("type definition with [!]!", t => {
   return t.deepEqual(actual, expected);
 });
 
+test("type definition with [[!]!]", t => {
+  const [actual] = parse(`
+  type ticTacToe {
+    board: [[String!]!]!
+  }
+  `);
+
+  const expected = {
+    type: "TYPE",
+    name: "ticTacToe",
+    fields: {
+      board: {
+        type: {
+          array: true,
+          type: "Character",
+          required: true
+        },
+        array: true,
+        noemptyelement: true
+      }
+    }
+  };
+
+  return t.deepEqual(actual, expected);
+});
+
+
+
+
 test("type definition with default value", t => {
   const [actual] = parse(`
   type Query {
