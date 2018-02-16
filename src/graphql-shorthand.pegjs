@@ -124,10 +124,16 @@ DirectiveOnList
     { return [head, ...tail]; }
 
 Literal
-  = StringLiteral / BooleanLiteral / NumericLiteral
+  = StringLiteral / BooleanLiteral / NumericLiteral / EOLLiteral
+
+EOLLiteral
+  = chars:DoubleEOLCharacter* { return chars.join(""); }
 
 StringLiteral
   = '"' chars:DoubleStringCharacter* '"' { return chars.join(""); }
+
+DoubleEOLCharacter
+  = !(EOL) . { return text(); }
 
 DoubleStringCharacter
   = !('"' / "\\" / EOL) . { return text(); }
