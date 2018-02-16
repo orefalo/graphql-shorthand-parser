@@ -1,9 +1,10 @@
-# GraphQL Shorthand Parser
+# GraphQL Shorthand & Query Parser
 
 [![Build Status](https://travis-ci.org/cameronhunter/graphql-shorthand-parser.svg?branch=master)](https://travis-ci.org/cameronhunter/graphql-shorthand-parser) [![NPM Version](https://img.shields.io/npm/v/graphql-shorthand-parser.svg)](https://npmjs.org/package/graphql-shorthand-parser) [![License](https://img.shields.io/npm/l/graphql-shorthand-parser.svg)](https://github.com/cameronhunter/graphql-shorthand-parser/blob/master/LICENSE.md)
 
-Parse GraphQL shorthand notation into a JSON object that can be used to
-auto-generate schema files.
+Parse GraphQL shorthand notation into a JSON object that can be used to auto-generate schema files.
+
+Can parse schemas and queries.
 
 ### Shorthand notation
 ```
@@ -23,7 +24,7 @@ interface Character {
 }
 
 // A humanoid creature in the Star Wars universe
-type Human : Character {
+type Human implements Character {
   id: String!
   name: String
   friends: [Character]
@@ -32,7 +33,7 @@ type Human : Character {
 }
 
 // A mechanical creature in the Star Wars universe
-type Droid : Character {
+type Droid implements Character {
   id: String!
   name: String
   friends: [Character]

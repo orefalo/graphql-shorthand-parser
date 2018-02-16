@@ -27,7 +27,7 @@ EnumIdent = $([a-z0-9_]i*)
 NumberIdent = $([.+-]?[0-9]+([.][0-9]+)?)
 
 Enum
-  = description:CommentList? "enum" SPACE name:TypeIdent BEGIN_BODY values:EnumIdentList CLOSE_BODY
+  = description:CommentList? "enum" SPACE name:TypeIdent BEGIN_BODY values:EnumList CLOSE_BODY
     { return clean({ type: "ENUM", name, description, values }); }
 
 Interface
@@ -54,16 +54,11 @@ Extend
   = description:CommentList? "extend" SPACE "type" SPACE name:TypeIdent BEGIN_BODY fields:FieldList CLOSE_BODY
     { return clean({ type: "EXTEND_TYPE", name, description, fields }); }
 
-// directive @dateFormat(format: String) on FIELD_DEFINITION | FIELD
-//directive @resolvePromiseRejectList(values: [String!]!, message: [String!]!) on FIELD_DEFINITION
-//directive @auth(roles: [String]) on FIELD_DEFINITION
 Directive
   = description:CommentList? "directive" SPACE directive:DirectiveTag SPACE "on" SPACE on:DirectiveOnList SPACE_EOL*
     { return clean({ type: "DIRECTIVE", directive, description, on }); }
 
 DirectiveTag
-//= "@" name:directiveName content:(!")" char:CHAR { return char; })* ")"
-//"(" comment:(!")" char:CHAR { return char; })* ")" EOL_SEP
 = "@" name:DirectiveIdent content:("(" SPACE_EOL* d:DirectiveParams ")" { return d; })?
   { return content? {name, content}:{name}; }
 
@@ -112,9 +107,13 @@ InputFieldList
   = head:InputField tail:(EOL_SEP* field:InputField { return field; })*
     { return [head, ...tail].reduce((result, field) => ({ ...result, ...field }), {}); }
 
-EnumIdentList
-  = head:EnumIdent tail:(SPACE_EOL value:EnumIdent { return value; })*
-    { return [head, ...tail].filter(String); }
+EnumValue
+  = description:CommentList? name:EnumIdent
+ 		{ return {...(description && { description }), name }; }
+ 
+EnumList
+  = head:EnumValue tail:(SPACE_EOL value:EnumValue { return value; })*
+    { return [head, ...tail].slice(0,-1); }
 
 DirectiveList
   = head:DirectiveTag tail:(SPACE value:DirectiveTag { return value; })*

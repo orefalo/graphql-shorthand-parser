@@ -11,7 +11,7 @@ test("add '#' comments as description", t => {
     type: "ENUM",
     name: "Bar",
     description: "FOO as in Foobar",
-    values: ["FOO"]
+    values: [{ name: "FOO" }]
   };
 
   return t.deepEqual(actual, expected);
@@ -27,7 +27,7 @@ test("add '//' comments as description", t => {
     type: "ENUM",
     name: "Bar",
     description: "FOO as in Foobar",
-    values: ["FOO"]
+    values: [{ name: "FOO" }]
   };
 
   return t.deepEqual(actual, expected);
@@ -45,7 +45,7 @@ test("add '/**/' comments as description", t => {
     type: "ENUM",
     name: "Bar",
     description: "FOO as in Foobar",
-    values: ["FOO"]
+    values: [{ name: "FOO" }]
   };
 
   return t.deepEqual(actual, expected);
@@ -102,4 +102,3 @@ test("add comments as field description", t => {
 
   return t.deepEqual(actual, expected);
 });
-

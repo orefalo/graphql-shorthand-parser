@@ -11,12 +11,22 @@ test("enum definition", t => {
     }
   `);
 
-  const expected = {
-    type: "ENUM",
-    name: "Episode",
-    description: "One of the films in the Star Wars Trilogy",
-    values: ["NEWHOPE", "EMPIRE", "JEDI"]
-  };
+  const expected =  {
+    "type": "ENUM",
+    "name": "Episode",
+    "description": "One of the films in the Star Wars Trilogy",
+    "values": [
+       {
+          "name": "NEWHOPE"
+       },
+       {
+          "name": "EMPIRE"
+       },
+       {
+          "name": "JEDI"
+       }
+    ]
+ };
 
   return t.deepEqual(actual, expected);
 });
@@ -31,7 +41,17 @@ test("enum definition one line", t => {
     type: "ENUM",
     name: "Episode",
     description: "One of the films in the Star Wars Trilogy",
-    values: ["NEWHOPE", "EMPIRE", "JEDI"]
+    values: [
+      {
+        name: "NEWHOPE"
+      },
+      {
+        name: "EMPIRE"
+      },
+      {
+        name: "JEDI"
+      }
+    ]
   };
 
   return t.deepEqual(actual, expected);
@@ -49,7 +69,11 @@ test("enum definition 1", t => {
     type: "ENUM",
     name: "Episode",
     description: "One of the films in the Star Wars Trilogy",
-    values: ["NEWHOPE"]
+    values: [
+      {
+        name: "NEWHOPE"
+      }
+    ]
   };
 
   return t.deepEqual(actual, expected);
@@ -74,13 +98,21 @@ test("enum bug 1", t => {
     type: "ENUM",
     name: "Episode",
     description: "One of the films in the Star Wars Trilogy",
-    values: ["NEWHOPE"]
+    values: [
+      {
+        description: "Released in 1977.",
+        name: "NEWHOPE"
+      },
+      {
+        description: "Released in 1980.",
+        name: "EMPIRE"
+      },
+      {
+        description: "Released in 1983.",
+        name: "JEDI"
+      }
+    ]
   };
 
   return t.deepEqual(actual, expected);
 });
-
-
-
-
-
