@@ -92,8 +92,13 @@ UnionList
     { return [head, ...tail]; }
 
 Field
-  = description:CommentList? name:FieldIdent args:(BEGIN_ARGS fields:FieldList CLOSE_ARGS { return fields; })? COLON_SEP type:ReturnType defaultValue:(EQUAL_SEP v:Literal { return v; })? directives:(SPACE d:DirectiveList  {return d;})? SPACE_EOL*
+  = description:CommentList? name:FieldIdent args:(BEGIN_ARGS fields:ArgsList CLOSE_ARGS { return fields; })? COLON_SEP type:ReturnType defaultValue:(EQUAL_SEP v:Literal { return v; })? directives:(SPACE d:DirectiveList  {return d;})? SPACE_EOL*
     { return clean({ [name]: { ...type, ...(args && { args }), description, defaultValue, directives } }); }
+
+ArgsList
+  = head:Field tail:(COMMA_SEP* field:Field { return field; })*
+    { return [head, ...tail].reduce((result, field) => ({ ...result, ...field }), {}); }
+
 
 FieldList
   = head:Field tail:(EOL_SEP* field:Field { return field; })*
