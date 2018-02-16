@@ -13,32 +13,38 @@ test("type definition", t => {
     }
   `);
 
-  const expected = {
-    type: "TYPE",
-    name: "Human",
-    description: "A humanoid creature in the Star Wars universe",
-    fields: {
-      id: {
-        type: "String",
-        required: true
-      },
-      name: {
-        type: "String"
-      },
-      friends: {
-        type: "Character",
-        array: true
-      },
-      appearsIn: {
-        type: "Episode",
-        array: true
-      },
-      homePlanet: {
-        type: "String"
-      }
+  const expected =   {
+    "type": "TYPE",
+    "name": "Human",
+    "description": "A humanoid creature in the Star Wars universe",
+    "fields": {
+       "id": {
+          "type": "String",
+          "required": true
+       },
+       "name": {
+          "type": "String"
+       },
+       "friends": {
+          "type": {
+             "type": "Character"
+          },
+          "array": true
+       },
+       "appearsIn": {
+          "type": {
+             "type": "Episode"
+          },
+          "array": true
+       },
+       "homePlanet": {
+          "type": "String"
+       }
     },
-    implements: ["Character"]
-  };
+    "implements": [
+       "Character"
+    ]
+ };
 
   return t.deepEqual(actual, expected);
 });
@@ -99,32 +105,38 @@ test("type definition with multiple interfaces", t => {
     }
   `);
 
-  const expected = {
-    type: "TYPE",
-    name: "Human",
-    fields: {
-      id: {
-        type: "String",
-        required: true
-      },
-      name: {
-        type: "String"
-      },
-      friends: {
-        type: "Character",
-        array: true
-      },
-      appearsIn: {
-        type: "Episode",
-        array: true
-      },
-      homePlanet: {
-        type: "String"
-      }
+  const expected =  {
+    "type": "TYPE",
+    "name": "Human",
+    "fields": {
+       "id": {
+          "type": "String",
+          "required": true
+       },
+       "name": {
+          "type": "String"
+       },
+       "friends": {
+          "type": {
+             "type": "Character"
+          },
+          "array": true
+       },
+       "appearsIn": {
+          "type": {
+             "type": "Episode"
+          },
+          "array": true
+       },
+       "homePlanet": {
+          "type": "String"
+       }
     },
-    implements: ["Character", "AnotherThing"]
-  };
-
+    "implements": [
+       "Character",
+       "AnotherThing"
+    ]
+ }
   return t.deepEqual(actual, expected);
 });
 
@@ -135,18 +147,20 @@ test("type definition with [!]!", t => {
     }
   `);
 
-  const expected = {
-    type: "TYPE",
-    name: "Human",
-    fields: {
-      friends: {
-        type: "Character",
-        array: true,
-        noemptyelement: true,
-        required: true
-      }
+  const expected =   {
+    "type": "TYPE",
+    "name": "Human",
+    "fields": {
+       "friends": {
+          "type": {
+             "type": "Character",
+             "required": true
+          },
+          "array": true,
+          "required": true
+       }
     }
-  };
+ };
 
   return t.deepEqual(actual, expected);
 });
@@ -158,21 +172,24 @@ test("type definition with [[!]!]", t => {
   }
   `);
 
-  const expected = {
-    type: "TYPE",
-    name: "ticTacToe",
-    fields: {
-      board: {
-        type: {
-          array: true,
-          type: "Character",
-          required: true
-        },
-        array: true,
-        noemptyelement: true
-      }
+  const expected =  {
+    "type": "TYPE",
+    "name": "ticTacToe",
+    "fields": {
+       "board": {
+          "type": {
+             "type": {
+                "type": "String",
+                "required": true
+             },
+             "array": true,
+             "required": true
+          },
+          "array": true,
+          "required": true
+       }
     }
-  };
+ };
 
   return t.deepEqual(actual, expected);
 });
@@ -189,23 +206,25 @@ test("type definition with default value", t => {
   }
   `);
 
-  const expected = {
-    type: "TYPE",
-    name: "Query",
-    fields: {
-      identification: {
-        type: "Identification",
-        array: true,
-        required: true,
-        args: {
-          type: {
-            type: "String",
-            defaultValue: "personal-identity-code"
+  const expected =  {
+    "type": "TYPE",
+    "name": "Query",
+    "fields": {
+       "identification": {
+          "type": {
+             "type": "Identification"
+          },
+          "array": true,
+          "required": true,
+          "args": {
+             "type": {
+                "type": "String",
+                "defaultValue": "personal-identity-code"
+             }
           }
-        }
-      }
+       }
     }
-  };
+ };
 
   return t.deepEqual(actual, expected);
 });

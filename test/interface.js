@@ -17,10 +17,25 @@ test("interface definition", t => {
     name: "Character",
     description: "A character in the Star Wars Trilogy",
     fields: {
-      id: { type: "String", required: true },
-      name: { type: "String" },
-      friends: { type: "Character", array: true },
-      appearsIn: { type: "Episode", array: true }
+      id: {
+        type: "String",
+        required: true
+      },
+      name: {
+        type: "String"
+      },
+      friends: {
+        type: {
+          type: "Character"
+        },
+        array: true
+      },
+      appearsIn: {
+        type: {
+          type: "Episode"
+        },
+        array: true
+      }
     }
   };
 

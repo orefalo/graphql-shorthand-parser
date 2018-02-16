@@ -81,11 +81,15 @@ test("add comments as field description", t => {
         description: "the name"
       },
       friends: {
-        type: "Character",
+        type: {
+          type: "Character"
+        },
         array: true
       },
       appearsIn: {
-        type: "Episode",
+        type: {
+          type: "Episode"
+        },
         array: true
       },
       homePlanet: {
