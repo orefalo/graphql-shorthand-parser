@@ -102,3 +102,4 @@ test("add comments as field description", t => {
 
   return t.deepEqual(actual, expected);
 });
+

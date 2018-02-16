@@ -109,7 +109,7 @@ InputField
     { return clean({ [name]: { ...type, ...(args && { args }), description, defaultValue } }); }
 
 InputFieldList
-  = head:InputField tail:(EOL_SEP field:InputField { return field; })*
+  = head:InputField tail:(EOL_SEP* field:InputField { return field; })*
     { return [head, ...tail].reduce((result, field) => ({ ...result, ...field }), {}); }
 
 EnumIdentList

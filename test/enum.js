@@ -54,3 +54,33 @@ test("enum definition 1", t => {
 
   return t.deepEqual(actual, expected);
 });
+
+test("enum bug 1", t => {
+  const [actual] = parse(`
+  # One of the films in the Star Wars Trilogy
+  enum Episode {
+    # Released in 1977.
+    NEWHOPE
+  
+    # Released in 1980.
+    EMPIRE
+  
+    # Released in 1983.
+    JEDI
+  }
+  `);
+
+  const expected = {
+    type: "ENUM",
+    name: "Episode",
+    description: "One of the films in the Star Wars Trilogy",
+    values: ["NEWHOPE"]
+  };
+
+  return t.deepEqual(actual, expected);
+});
+
+
+
+
+
