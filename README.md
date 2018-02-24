@@ -1,4 +1,4 @@
-# GraphQL Shorthand & Query Parser
+# GraphQL Shorthand &  Parser
 
 [![Build Status](https://travis-ci.org/cameronhunter/graphql-shorthand-parser.svg?branch=master)](https://travis-ci.org/cameronhunter/graphql-shorthand-parser) [![NPM Version](https://img.shields.io/npm/v/graphql-shorthand-parser.svg)](https://npmjs.org/package/graphql-shorthand-parser) [![License](https://img.shields.io/npm/l/graphql-shorthand-parser.svg)](https://github.com/cameronhunter/graphql-shorthand-parser/blob/master/LICENSE.md)
 
@@ -175,6 +175,5 @@ type Query {
 ```
 
 ### Authors
-
-* Cameron Hunter - [Origin code](https://github.com/cameronhunter/graphql-shorthand-parser)
 * Olivier Refalo - [2018 refresh](https://github.com/orefalo/graphql-shorthand-parser)
+* Cameron Hunter - [Origin code](https://github.com/cameronhunter/graphql-shorthand-parser)
