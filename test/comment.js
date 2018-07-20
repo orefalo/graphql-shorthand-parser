@@ -51,6 +51,25 @@ test("add '/**/' comments as description", t => {
   return t.deepEqual(actual, expected);
 });
 
+
+test("add \"\"\" comments as description", t => {
+  const [actual] = parse(`
+    """
+      FOO as in Foobar
+    """
+    enum Bar { FOO }
+  `);
+
+  const expected = {
+    type: "ENUM",
+    name: "Bar",
+    description: "FOO as in Foobar",
+    values: [{ name: "FOO" }]
+  };
+
+  return t.deepEqual(actual, expected);
+});
+
 test("add comments as field description", t => {
   const [actual] = parse(`
     // A humanoid creature in the Star Wars universe
@@ -59,6 +78,9 @@ test("add comments as field description", t => {
       id: String!
       // the name
       name: String
+      """
+      this is a comment
+      """
       friends: [Character]
       appearsIn: [Episode]
       /* the home planet */
@@ -81,6 +103,7 @@ test("add comments as field description", t => {
         description: "the name"
       },
       friends: {
+        description: "this is a comment",
         type: {
           type: "Character"
         },

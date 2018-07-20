@@ -67,7 +67,8 @@ Comment
     { return comment.join("").trim(); }
   / "/*" comment:(!"*/" char:CHAR { return char; })* "*/" EOL_SEP
     { return comment.join("").replace(/\n\s*[*]?\s*/g, " ").replace(/\s+/, " ").trim(); }
-  
+  / "\"\"\"" comment:(!"\"\"\"" char:CHAR { return char; })* "\"\"\"" EOL_SEP
+    { return comment.join("").replace(/\n\s*[*]?\s*/g, " ").replace(/\s+/, " ").trim(); }
 CommentList
   = head:Comment tail:(EOL? c:Comment { return c; })*
     { return [head, ...tail].join('\n'); }

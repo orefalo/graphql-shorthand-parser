@@ -106,7 +106,7 @@ test("parse StarWars schema", t => {
     }`
    
     const  actual= parse(schema);
-    console.log(JSON.stringify(actual, null, 2));
+    //console.log(JSON.stringify(actual, null, 2));
 
     return t.pass("good");
   } catch (e) {
