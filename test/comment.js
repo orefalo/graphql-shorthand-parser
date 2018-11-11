@@ -17,6 +17,25 @@ test("add '#' comments as description", t => {
   return t.deepEqual(actual, expected);
 });
 
+test("add '#' comments as description AND EXTRA LINE", t => {
+  const [actual] = parse(`
+    # FOO as in Foobar
+
+    enum Bar { FOO }
+  `);
+
+  const expected = {
+    type: "ENUM",
+    name: "Bar",
+    description: "FOO as in Foobar",
+    values: [{ name: "FOO" }]
+  };
+
+  return t.deepEqual(actual, expected);
+});
+
+
+
 test("add '//' comments as description", t => {
   const [actual] = parse(`
     // FOO as in Foobar
@@ -33,11 +52,50 @@ test("add '//' comments as description", t => {
   return t.deepEqual(actual, expected);
 });
 
+test("add '//' comments as description AND EXTRA LINE", t => {
+  const [actual] = parse(`
+    // FOO as in Foobar
+
+    enum Bar { FOO }
+  `);
+
+  const expected = {
+    type: "ENUM",
+    name: "Bar",
+    description: "FOO as in Foobar",
+    values: [{ name: "FOO" }]
+  };
+
+  return t.deepEqual(actual, expected);
+});
+
+
+
 test("add '/**/' comments as description", t => {
   const [actual] = parse(`
     /*
       FOO as in Foobar
     */
+    enum Bar { FOO }
+  `);
+
+  const expected = {
+    type: "ENUM",
+    name: "Bar",
+    description: "FOO as in Foobar",
+    values: [{ name: "FOO" }]
+  };
+
+  return t.deepEqual(actual, expected);
+});
+
+test("add '/**/' comments as description AND EXTRA LINES", t => {
+  const [actual] = parse(`
+    /*
+      FOO as in Foobar
+    */
+
+
     enum Bar { FOO }
   `);
 
@@ -69,6 +127,28 @@ test("add \"\"\" comments as description", t => {
 
   return t.deepEqual(actual, expected);
 });
+
+
+test("add \"\"\" comments as description AND EXTRA LINES", t => {
+  const [actual] = parse(`
+    """
+      FOO as in Foobar
+    """
+
+
+    enum Bar { FOO }
+  `);
+
+  const expected = {
+    type: "ENUM",
+    name: "Bar",
+    description: "FOO as in Foobar",
+    values: [{ name: "FOO" }]
+  };
+
+  return t.deepEqual(actual, expected);
+});
+
 
 test("add comments as field description", t => {
   const [actual] = parse(`
