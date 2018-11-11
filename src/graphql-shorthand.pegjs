@@ -31,7 +31,7 @@ Enum
     { return clean({ type: "ENUM", name, description, values }); }
 
 Interface
-  = description:CommentList? "interface" SPACE name:TypeIdent implts:(IMPLEMENTS interfacename:TypeList { return interfacename; })? BEGIN_BODY fields:FieldList CLOSE_BODY
+  = description:CommentList? "interface" SPACE name:TypeIdent implts:(IMPLEMENTS interfacename:TypeList { return interfacename; })? BEGIN_BODY fields:FieldList? CLOSE_BODY
     { return clean({ type: "INTERFACE", name, description, fields, implements:implts }); }
 
 Scalar
@@ -43,7 +43,7 @@ Union
     { return clean({ type: "UNION", name, description, values }); }
 
 Object
-  = description:CommentList? "type" SPACE name:TypeIdent implts:(IMPLEMENTS interfacename:TypeList { return interfacename; })? BEGIN_BODY fields:FieldList CLOSE_BODY
+  = description:CommentList? "type" SPACE name:TypeIdent implts:(IMPLEMENTS interfacename:TypeList { return interfacename; })? BEGIN_BODY fields:FieldList? CLOSE_BODY
     { return clean({ type: "TYPE", name, description, fields, implements:implts }); }
 
 Schema
@@ -85,7 +85,7 @@ ArrayType
   = "[" type:ReturnType "]" required:"!"? { return { type, array: true, ...(required && { required: !!required }) } }
 
 TypeList
-  = head:TypeIdent tail:(COMMA_SEP type:TypeIdent { return type; })*
+  = head:TypeIdent tail:(COMMA_SEP type:TypeIdent { return type; } )*
     { return [head, ...tail]; }
 
 UnionList
