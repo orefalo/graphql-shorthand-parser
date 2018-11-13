@@ -23,9 +23,9 @@ FieldIdent = $([a-z0-9_]i*)
 // types start with a uppercase
 TypeIdent = $([a-z0-9_]i*)
 
-//ValueIdent = $([a-z0-9_]i*)
-
 DirectiveIdent = $([a-z0-9_]i*)
+DirectiveValueIdent = $([ \'\",\[\]`~!@#$%^&*{}\\a-z0-9_]i*)
+
 EnumIdent = $([a-z0-9_]i*)
 NumberIdent = $([.+-]?[0-9]+([.][0-9]+)?)
 
@@ -62,8 +62,25 @@ Directive
     { return clean({ type: "DIRECTIVE", directive, description, on }); }
 
 DirectiveTag
- = "@" name:DirectiveIdent content:("(" SPACE_EOL* d:DirectiveParams ")" { return d; })?
-   { return content? {name, content}:{name}; }
+ = "@" name:DirectiveIdent args:(BEGIN_ARGS v:DirectiveArgString SPACE_EOL* ')' { return v; })?
+   { return args? {name, args}:{name}; }
+
+DirectiveList
+  = head:DirectiveTag tail:(SPACE value:DirectiveTag { return value; })*
+    { return [head, ...tail]; }
+
+DirectiveArgString
+= letters:(!')' l:CHAR { return l;})* { return letters ? letters.join('') : ""; }
+
+// DirectiveValueList
+//   = head:DirectiveValue tail:(COMMA_SEP* field:DirectiveValue { return field; })*
+//     { return [head, ...tail].reduce((result, field) => ({ ...result, ...field }), {}); }
+
+// DirectiveValue
+//   = description:CommentList? name:DirectiveIdent args:(BEGIN_ARGS fields:DirectiveValueList CLOSE_ARGS { return fields; })? COLON_SEP value:DirectiveReturnValue SPACE_EOL*
+//     { return clean({ [name]: { ...value, ...(args && { args }), description } }); }
+
+// DirectiveReturnValue = value:DirectiveValueIdent  { return { value }; }
 
 Comment
   = LINE_COMMENT comment:(!EOL char:CHAR { return char; })* EOL_SEP*
@@ -123,9 +140,6 @@ EnumList
   = head:EnumValue tail:(SPACE_EOL value:EnumValue { return value; })*
     { return [head, ...tail].slice(0,-1); }
 
-DirectiveList
-  = head:DirectiveTag tail:(SPACE value:DirectiveTag { return value; })*
-    { return [head, ...tail]; }
 
 DirectiveOnList
   = head:DirectiveOn tail:(PIPE_SEP value:DirectiveOn { return value; })*
@@ -151,9 +165,6 @@ BooleanLiteral
 
 NumericLiteral
   = value:NumberIdent { return Number(value.replace(/^[.]/, '0.')); }
-
-DirectiveParams
-= letters:(!')' l:CHAR { return l;})* { return letters ? letters.join('') : ""; }
 
 DirectiveOn
 = "FIELD_DEFINITION"  { return "schema" } / "FIELD"  { return "query" }

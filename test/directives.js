@@ -109,7 +109,9 @@ test("multiple directives", t => {
     directives: [
       {
         name: "stringValue",
-        content: 'oneOf: [" ","X", "O"]'
+        args: {
+          "oneOf": [" ","X", "O"]
+        }
       },
       {
         name: "auth",
