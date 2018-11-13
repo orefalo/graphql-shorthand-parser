@@ -15,7 +15,7 @@
 }
 
 start
-  = SPACE_EOL* definitions:(Enum / Interface / Object / Union / InputObject / Scalar / Extend / Directive / Schema)* SPACE_EOL*
+  = SPACE_EOL* definitions:(Enum / Interface / Type / Union / InputType / Scalar / Extend / Directive / Schema)* SPACE_EOL*
     { return definitions; }
 
 // fields start with a lowercase
@@ -45,7 +45,7 @@ Union
   = description:CommentList? "union" SPACE name:TypeIdent EQUAL_SEP values:UnionList SPACE_EOL*
     { return clean({ type: "UNION", name, description, values }); }
 
-Object
+Type
   = description:CommentList? "type" SPACE name:TypeIdent implts:(IMPLEMENTS interfacename:TypeList { return interfacename; })? BEGIN_BODY fields:FieldList? CLOSE_BODY
     { return clean({ type: "TYPE", name, description, fields, implements:implts }); }
 
@@ -72,15 +72,15 @@ DirectiveList
 DirectiveArgString
 = letters:(!')' l:CHAR { return l;})* { return letters ? letters.join('') : ""; }
 
-DirectiveValueList
-  = head:DirectiveValue tail:(COMMA_SEP* field:DirectiveValue { return field; })*
-    { return [head, ...tail].reduce((result, field) => ({ ...result, ...field }), {}); }
+// DirectiveValueList
+//   = head:DirectiveValue tail:(COMMA_SEP* field:DirectiveValue { return field; })*
+//     { return [head, ...tail].reduce((result, field) => ({ ...result, ...field }), {}); }
 
-DirectiveValue
-  = description:CommentList? name:DirectiveIdent args:(BEGIN_ARGS fields:DirectiveValueList CLOSE_ARGS { return fields; })? COLON_SEP value:DirectiveReturnValue SPACE_EOL*
-    { return clean({ [name]: { ...value, ...(args && { args }), description } }); }
+// DirectiveValue
+//   = description:CommentList? name:DirectiveIdent args:(BEGIN_ARGS fields:DirectiveValueList CLOSE_ARGS { return fields; })? COLON_SEP value:DirectiveReturnValue SPACE_EOL*
+//     { return clean({ [name]: { ...value, ...(args && { args }), description } }); }
 
-DirectiveReturnValue = value:DirectiveValueIdent  { return { value }; }
+// DirectiveReturnValue = value:DirectiveValueIdent  { return { value }; }
 
 Comment
   = LINE_COMMENT comment:(!EOL char:CHAR { return char; })* EOL_SEP*
@@ -93,7 +93,7 @@ CommentList
   = head:Comment tail:(EOL? c:Comment { return c; })*
     { return [head, ...tail].join('\n'); }
 
-InputObject
+InputType
   = description:CommentList? "input" SPACE name:TypeIdent interfaces:(COLON_SEP list:TypeList { return list; })? BEGIN_BODY fields:InputFieldList CLOSE_BODY
     { return clean({ type: "INPUT", name, description, fields, interfaces }); }
 
