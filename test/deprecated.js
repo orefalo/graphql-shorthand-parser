@@ -14,7 +14,7 @@ test("deprecated on scalar", t => {
     directives: [
       {
         name: "deprecated",
-        content: 'reason: "killed off AlphaNumeric"'
+        args: 'reason: "killed off AlphaNumeric"'
       }
     ]
   };
@@ -43,7 +43,7 @@ test("deprecated on field", t => {
         directives: [
           {
             name: "deprecated",
-            content: 'reason: "killed off customerAccount"'
+            args: 'reason: "killed off customerAccount"'
           }
         ]
       }

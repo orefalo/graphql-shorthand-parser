@@ -10,7 +10,7 @@ test("directive type", t => {
     type: "DIRECTIVE",
     directive: {
       name: "auth",
-      content: "roles: [String]"
+      args: "roles: [String]"
     },
     on: ["schema", "query"]
   };
@@ -31,7 +31,7 @@ test("directive on scalar", t => {
     directives: [
       {
         name: "stringValue",
-        content: 'regex: "^[0-9a-zA-Z]*$"'
+        args: 'regex: "^[0-9a-zA-Z]*$"'
       }
     ]
   };
@@ -50,7 +50,7 @@ test("directive on include $variable", t => {
     directives: [
       {
         name: "include",
-        content: "if: $show"
+        args: "if: $show"
       }
     ]
   };
@@ -69,7 +69,7 @@ test("directive with @_", t => {
     directives: [
       {
         name: "_",
-        content: 'countBy: "gender"'
+        args: 'countBy: "gender"'
       }
     ]
   };
@@ -90,7 +90,7 @@ test("directive with []", t => {
     directives: [
       {
         name: "numberValue",
-        content: "oneOf: [ 1, 2, 4, 8, 16, 32, 64, 128 ]  "
+        args: "oneOf: [ 1, 2, 4, 8, 16, 32, 64, 128 ]  "
       }
     ]
   };
@@ -109,13 +109,11 @@ test("multiple directives", t => {
     directives: [
       {
         name: "stringValue",
-        args: {
-          "oneOf": [" ","X", "O"]
-        }
+        args: 'oneOf: [" ","X", "O"]'
       },
       {
         name: "auth",
-        content: 'roles: ["admin"]'
+        args: 'roles: ["admin"]'
       }
     ]
   };
