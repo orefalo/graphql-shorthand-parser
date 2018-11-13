@@ -168,14 +168,3 @@ test("directive on parametrized field", t => {
 
   return t.deepEqual(actual, expected);
 });
-
-// type ticTacToe {
-//   board: [[String!]!] @list(
-//     minItems: 3,
-//     maxItems: 3
-//     innerList: {
-//       minItems: 3,
-//       maxItems: 3
-//     }
-//   ) @stringValue(oneOf: [" ","X", "O"])
-// }

@@ -22,6 +22,9 @@ start
 FieldIdent = $([a-z0-9_]i*)
 // types start with a uppercase
 TypeIdent = $([a-z0-9_]i*)
+
+//ValueIdent = $([a-z0-9_]i*)
+
 DirectiveIdent = $([a-z0-9_]i*)
 EnumIdent = $([a-z0-9_]i*)
 NumberIdent = $([.+-]?[0-9]+([.][0-9]+)?)
@@ -59,8 +62,8 @@ Directive
     { return clean({ type: "DIRECTIVE", directive, description, on }); }
 
 DirectiveTag
-= "@" name:DirectiveIdent content:("(" SPACE_EOL* d:DirectiveParams ")" { return d; })?
-  { return content? {name, content}:{name}; }
+ = "@" name:DirectiveIdent content:("(" SPACE_EOL* d:DirectiveParams ")" { return d; })?
+   { return content? {name, content}:{name}; }
 
 Comment
   = LINE_COMMENT comment:(!EOL char:CHAR { return char; })* EOL_SEP*
@@ -100,7 +103,6 @@ ArgsList
   = head:Field tail:(COMMA_SEP* field:Field { return field; })*
     { return [head, ...tail].reduce((result, field) => ({ ...result, ...field }), {}); }
 
-
 FieldList
   = head:Field tail:(EOL_SEP* field:Field { return field; })*
     { return [head, ...tail].reduce((result, field) => ({ ...result, ...field }), {}); }
@@ -133,10 +135,10 @@ Literal
   = StringLiteral / BooleanLiteral / NumericLiteral / EOLLiteral
 
 EOLLiteral
-  = chars:DoubleEOLCharacter* { return chars.join(""); }
+  = chars:DoubleEOLCharacter* { return chars.join(''); }
 
 StringLiteral
-  = '"' chars:DoubleStringCharacter* '"' { return chars.join(""); }
+  = '"' chars:DoubleStringCharacter* '"' { return chars.join(''); }
 
 DoubleEOLCharacter
   = !(EOL) . { return text(); }
