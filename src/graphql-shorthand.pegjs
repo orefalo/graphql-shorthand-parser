@@ -72,15 +72,15 @@ DirectiveList
 DirectiveArgString
 = letters:(!')' l:CHAR { return l;})* { return letters ? letters.join('') : ""; }
 
-// DirectiveValueList
-//   = head:DirectiveValue tail:(COMMA_SEP* field:DirectiveValue { return field; })*
-//     { return [head, ...tail].reduce((result, field) => ({ ...result, ...field }), {}); }
+DirectiveValueList
+  = head:DirectiveValue tail:(COMMA_SEP* field:DirectiveValue { return field; })*
+    { return [head, ...tail].reduce((result, field) => ({ ...result, ...field }), {}); }
 
-// DirectiveValue
-//   = description:CommentList? name:DirectiveIdent args:(BEGIN_ARGS fields:DirectiveValueList CLOSE_ARGS { return fields; })? COLON_SEP value:DirectiveReturnValue SPACE_EOL*
-//     { return clean({ [name]: { ...value, ...(args && { args }), description } }); }
+DirectiveValue
+  = description:CommentList? name:DirectiveIdent args:(BEGIN_ARGS fields:DirectiveValueList CLOSE_ARGS { return fields; })? COLON_SEP value:DirectiveReturnValue SPACE_EOL*
+    { return clean({ [name]: { ...value, ...(args && { args }), description } }); }
 
-// DirectiveReturnValue = value:DirectiveValueIdent  { return { value }; }
+DirectiveReturnValue = value:DirectiveValueIdent  { return { value }; }
 
 Comment
   = LINE_COMMENT comment:(!EOL char:CHAR { return char; })* EOL_SEP*
