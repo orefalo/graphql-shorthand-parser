@@ -15,7 +15,7 @@
 }
 
 start
-  = SPACE_EOL* definitions:(Enum / Interface / Type / Union / InputType / Scalar / Extend / Directive / Schema)* SPACE_EOL*
+  = SPACES_EOL* definitions:(Enum / Interface / Type / Union / InputType / Scalar / Extend / Directive / Schema)* SPACES_EOL*
     { return definitions; }
 
 // fields start with a lowercase
@@ -30,23 +30,23 @@ EnumIdent = $([a-z0-9_]i*)
 NumberIdent = $([.+-]?[0-9]+([.][0-9]+)?)
 
 Enum
-  = description:CommentList? "enum" SPACE name:TypeIdent BEGIN_BODY values:EnumList CLOSE_BODY
+  = description:CommentList? "enum" SPACES name:TypeIdent BEGIN_BODY values:EnumList CLOSE_BODY
     { return clean({ type: "ENUM", name, description, values }); }
 
 Interface
-  = description:CommentList? "interface" SPACE name:TypeIdent implts:(IMPLEMENTS interfacename:TypeList { return interfacename; })? BEGIN_BODY fields:FieldList? CLOSE_BODY
+  = description:CommentList? "interface" SPACES name:TypeIdent implts:(IMPLEMENTS interfacename:TypeList { return interfacename; })? BEGIN_BODY fields:FieldList? CLOSE_BODY
     { return clean({ type: "INTERFACE", name, description, fields, implements:implts }); }
 
 Scalar
-  = description:CommentList? "scalar" SPACE name:TypeIdent directives:(SPACE d:DirectiveList  {return d;})? SPACE_EOL*
+  = description:CommentList? "scalar" SPACES name:TypeIdent directives:(SPACES d:DirectiveList  {return d;})? SPACES_EOL*
     { return clean({ type: "SCALAR", name, description, directives }); }
 
 Union 
-  = description:CommentList? "union" SPACE name:TypeIdent EQUAL_SEP values:UnionList SPACE_EOL*
+  = description:CommentList? "union" SPACES name:TypeIdent EQUAL_SEP values:UnionList SPACES_EOL*
     { return clean({ type: "UNION", name, description, values }); }
 
 Type
-  = description:CommentList? "type" SPACE name:TypeIdent implts:(IMPLEMENTS interfacename:TypeList { return interfacename; })? BEGIN_BODY fields:FieldList? CLOSE_BODY
+  = description:CommentList? "type" SPACES name:TypeIdent implts:(IMPLEMENTS interfacename:TypeList { return interfacename; })? BEGIN_BODY fields:FieldList? CLOSE_BODY
     { return clean({ type: "TYPE", name, description, fields, implements:implts }); }
 
 Schema
@@ -54,19 +54,19 @@ Schema
     { return clean({ type: "SCHEMA", description, fields }); }
 
 Extend
-  = description:CommentList? "extend" SPACE "type" SPACE name:TypeIdent BEGIN_BODY fields:FieldList CLOSE_BODY
+  = description:CommentList? "extend" SPACES "type" SPACES name:TypeIdent BEGIN_BODY fields:FieldList CLOSE_BODY
     { return clean({ type: "EXTEND_TYPE", name, description, fields }); }
 
 Directive
-  = description:CommentList? "directive" SPACE directive:DirectiveTag SPACE "on" SPACE on:DirectiveOnList SPACE_EOL*
+  = description:CommentList? "directive" SPACES directive:DirectiveTag SPACES "on" SPACES on:DirectiveOnList SPACES_EOL*
     { return clean({ type: "DIRECTIVE", directive, description, on }); }
 
 DirectiveTag
- = "@" name:DirectiveIdent args:(BEGIN_ARGS v:DirectiveArgString SPACE_EOL* ')' { return v; })?
+ = "@" name:DirectiveIdent args:(BEGIN_ARGS v:DirectiveArgString SPACES_EOL* ')' { return v; })?
    { return args? {name, args}:{name}; }
 
 DirectiveList
-  = head:DirectiveTag tail:(SPACE value:DirectiveTag { return value; })*
+  = head:DirectiveTag tail:(SPACES value:DirectiveTag { return value; })*
     { return [head, ...tail]; }
 
 DirectiveArgString
@@ -77,7 +77,7 @@ DirectiveArgString
 //     { return [head, ...tail].reduce((result, field) => ({ ...result, ...field }), {}); }
 
 // DirectiveValue
-//   = description:CommentList? name:DirectiveIdent args:(BEGIN_ARGS fields:DirectiveValueList CLOSE_ARGS { return fields; })? COLON_SEP value:DirectiveReturnValue SPACE_EOL*
+//   = description:CommentList? name:DirectiveIdent args:(BEGIN_ARGS fields:DirectiveValueList CLOSE_ARGS { return fields; })? COLON_SEP value:DirectiveReturnValue SPACES_EOL*
 //     { return clean({ [name]: { ...value, ...(args && { args }), description } }); }
 
 // DirectiveReturnValue = value:DirectiveValueIdent  { return { value }; }
@@ -94,7 +94,7 @@ CommentList
     { return [head, ...tail].join('\n'); }
 
 InputType
-  = description:CommentList? "input" SPACE name:TypeIdent interfaces:(COLON_SEP list:TypeList { return list; })? BEGIN_BODY fields:InputFieldList CLOSE_BODY
+  = description:CommentList? "input" SPACES name:TypeIdent interfaces:(COLON_SEP list:TypeList { return list; })? BEGIN_BODY fields:InputFieldList CLOSE_BODY
     { return clean({ type: "INPUT", name, description, fields, interfaces }); }
 
 ReturnType
@@ -113,7 +113,7 @@ UnionList
     { return [head, ...tail]; }
 
 Field
-  = description:CommentList? name:FieldIdent args:(BEGIN_ARGS fields:ArgsList CLOSE_ARGS { return fields; })? COLON_SEP type:ReturnType defaultValue:(EQUAL_SEP v:Literal { return v; })? directives:(SPACE d:DirectiveList  {return d;})? SPACE_EOL*
+  = description:CommentList? name:FieldIdent args:(BEGIN_ARGS fields:ArgsList CLOSE_ARGS { return fields; })? COLON_SEP type:ReturnType defaultValue:(EQUAL_SEP v:Literal { return v; })? directives:(SPACES d:DirectiveList  {return d;})? SPACES_EOL*
     { return clean({ [name]: { ...type, ...(args && { args }), description, defaultValue, directives } }); }
 
 ArgsList
@@ -137,7 +137,7 @@ EnumValue
  		{ return {...(description && { description }), name }; }
  
 EnumList
-  = head:EnumValue tail:(SPACE_EOL value:EnumValue { return value; })*
+  = head:EnumValue tail:(SPACES_EOL value:EnumValue { return value; })*
     { return [head, ...tail].slice(0,-1); }
 
 
@@ -171,18 +171,19 @@ DirectiveOn
 
 CHAR = .
 LINE_COMMENT = "#" / "//"
-SPACE = [ \t]+
+SPACE = [ \t]
+SPACES = SPACE+
 EOL = "\n" / "\r\n" / "\r" / "\u2028" / "\u2029"
-SPACE_EOL = (SPACE / EOL)+
+SPACES_EOL = (SPACE / EOL)+
 
-BEGIN_BODY = SPACE_EOL* "{" SPACE_EOL*
-CLOSE_BODY = SPACE_EOL* "}" SPACE_EOL*
-BEGIN_ARGS = SPACE_EOL* "(" SPACE_EOL*
-CLOSE_ARGS = SPACE_EOL* ")" SPACE_EOL*
-IMPLEMENTS = SPACE_EOL* "implements" SPACE_EOL*
+BEGIN_BODY = SPACES_EOL* "{" SPACES_EOL*
+CLOSE_BODY = SPACES_EOL* "}" SPACES_EOL*
+BEGIN_ARGS = SPACES_EOL* "(" SPACES_EOL*
+CLOSE_ARGS = SPACES_EOL* ")" SPACES_EOL*
+IMPLEMENTS = SPACES_EOL* "implements" SPACES_EOL*
 
-COLON_SEP = SPACE_EOL* ":" SPACE_EOL*
-EQUAL_SEP = SPACE_EOL* "=" SPACE_EOL*
-COMMA_SEP = SPACE_EOL* "," SPACE_EOL*
-PIPE_SEP = SPACE_EOL* "|" SPACE_EOL*
-EOL_SEP = SPACE* EOL SPACE*
+COLON_SEP = SPACES_EOL* ":" SPACES_EOL*
+EQUAL_SEP = SPACES_EOL* "=" SPACES_EOL*
+COMMA_SEP = SPACES_EOL* "," SPACES_EOL*
+PIPE_SEP = SPACES_EOL* "|" SPACES_EOL*
+EOL_SEP = SPACES* EOL SPACES*
