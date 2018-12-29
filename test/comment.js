@@ -1,6 +1,22 @@
 import test from "ava";
 import { parse } from "..";
 
+test("special chars in comment description", t => {
+  const [actual] = parse(`
+    # FOO, is a special (_)!.
+    enum Bar { FOO }
+  `);
+
+  const expected = {
+    type: "ENUM",
+    name: "Bar",
+    description: "FOO, is a special (_)!.",
+    values: [{ name: "FOO" }]
+  };
+
+  return t.deepEqual(actual, expected);
+});
+
 test("add '#' comments as description", t => {
   const [actual] = parse(`
     # FOO as in Foobar

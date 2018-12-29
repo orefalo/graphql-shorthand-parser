@@ -121,7 +121,7 @@ test("multiple directives", t => {
   return t.deepEqual(actual, expected);
 });
 
-test("multiple directives", t => {
+test("multiple directives 2", t => {
   const [actual] = parse(`
     scalar AlphaNumeric @upper
   `);
