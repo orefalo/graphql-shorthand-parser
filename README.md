@@ -6,6 +6,13 @@ Parse GraphQL shorthand notation into a JSON object that can be used to auto-gen
 
 Can parse schemas and queries.
 
+## Motivation
+
+* smaller, faster than the graphql library
+* no dependency
+* gracefull grammar
+* easy to modify
+
 ### Shorthand notation
 ```
 // One of the films in the Star Wars Trilogy
