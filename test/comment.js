@@ -1,7 +1,22 @@
 import test from "ava";
 import { parse } from "..";
 
+test("End of file comments", t => {
+  const [actual] = parse(`
+    # FOO as in Foobar
+    enum Bar { FOO }
+    # END OF FILE
+  `);
 
+  const expected = {
+    type: "ENUM",
+    name: "Bar",
+    description: "FOO as in Foobar",
+    values: [{ name: "FOO" }]
+  };
+
+  return t.deepEqual(actual, expected);
+});
 
 
 test("test multiple single line comments", t => {

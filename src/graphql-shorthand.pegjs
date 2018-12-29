@@ -15,7 +15,7 @@
 }
 
 start
-  = SPACES_EOL* definitions:(Enum / Interface / Type / Union / InputType / Scalar / Extend / Directive / Schema)* SPACES_EOL*
+  = SPACES_EOL* definitions:(Enum / Interface / Type / Union / InputType / Scalar / Extend / Directive / Schema / CommentList)* SPACES_EOL*
     { return definitions; }
 
 // fields start with a lowercase
@@ -89,6 +89,7 @@ Comment
     { return comment.join("").replace(/\n\s*[*]?\s*/g, " ").replace(/\s+/, " ").trim(); }
   / "\"\"\"" comment:(!"\"\"\"" char:CHAR { return char; })* "\"\"\"" EOL_SEP*
     { return comment.join("").replace(/\n\s*[*]?\s*/g, " ").replace(/\s+/, " ").trim(); }
+
 CommentList
   = head:Comment tail:(EOL? c:Comment { return c; })*
     { return [head, ...tail].join('\n'); }
