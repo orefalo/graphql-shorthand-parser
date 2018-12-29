@@ -1,5 +1,5 @@
 {
-  "name": "graphql-shorthand-parser",
+  "name": "graphql-shorthand-parser-new",
   "version": "1.0.1",
   "description": "Parse GraphQL schemas from shorthand notation",
   "main": "dist/graphql-shorthand.js",
@@ -22,7 +22,7 @@
   "keywords": [
     "graphql"
   ],
-  "author": "Cameron Hunter <hello@cameronhunter.co.uk>",
+  "author": "Olivier Refalo <orefalo@yahoo.com>",
   "license": "MIT",
   "devDependencies": {
     "ava": "^1.0.1",
