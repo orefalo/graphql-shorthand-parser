@@ -1,6 +1,31 @@
 import test from "ava";
 import { parse } from "..";
 
+
+
+
+test("test multiple single line comments", t => {
+  const [actual] = parse(`
+  # name: SnapCore
+  # author Olivier Refalo
+  # copyright (c)SnapCore.
+  
+  # START_SECTION_ReactivePlatform
+
+    enum Bar { FOO }
+  `);
+
+  const expected = {
+    type: "ENUM",
+    name: "Bar",
+    description: "name: SnapCore\nauthor Olivier Refalo\ncopyright (c)SnapCore.\nSTART_SECTION_ReactivePlatform",
+    values: [{ name: "FOO" }]
+  };
+
+  return t.deepEqual(actual, expected);
+});
+
+
 test("special chars in comment description", t => {
   const [actual] = parse(`
     # FOO, is a special (_)!.
