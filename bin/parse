@@ -2,8 +2,10 @@
 
 var path = require("path");
 var fs = require("fs");
-var parser = require("graphql-shorthand-parser");
+var parser = require("graphql-shorthand-parser-new");
 
 fs.readFile(process.argv[2], "utf8", function(error, shorthand) {
   console.log(JSON.stringify(parser.parse(shorthand), null, 2));
 });
+
+
