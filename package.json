@@ -13,8 +13,8 @@
     "parse": "./bin/parse"
   },
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/orefalo/graphql-shorthand-parser"
+    "type": "git",
+    "url": "https://github.com/orefalo/graphql-shorthand-parser"
   },
   "files": [
     "dist"

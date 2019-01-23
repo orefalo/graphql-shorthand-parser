@@ -19,14 +19,14 @@ start
     { return definitions; }
 
 // fields start with a lowercase
-FieldIdent = $([a-z0-9_]i*)
+FieldIdent = $([a-zA-Z0-9_]+)
 // types start with a uppercase
-TypeIdent = $([a-z0-9_]i*)
+TypeIdent = $([a-zA-Z0-9_]+)
 
-DirectiveIdent = $([a-z0-9_]i*)
-DirectiveValueIdent = $([ \'\",\[\]`~!@#$%^&*{}\\a-z0-9_]i*)
+DirectiveIdent = $([a-zA-Z0-9_]*)
+DirectiveValueIdent = $([ \'\",\[\]`~!@#$%^&*{}\\a-zA-Z0-9_]*)
 
-EnumIdent = $([a-z0-9_]i*)
+EnumIdent = $([a-zA-Z0-9_]*)
 NumberIdent = $([.+-]?[0-9]+([.][0-9]+)?)
 
 Enum
