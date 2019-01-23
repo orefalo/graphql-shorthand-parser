@@ -18,14 +18,11 @@ start
   = SPACES_EOL* definitions:(Enum / Interface / Type / Union / InputType / Scalar / Extend / Directive / Schema / CommentList)* SPACES_EOL*
     { return definitions; }
 
-// fields start with a lowercase
 FieldIdent = $([a-zA-Z0-9_]+)
-// types start with a uppercase
 TypeIdent = $([a-zA-Z0-9_]+)
+DirectiveIdent = $([a-zA-Z0-9_]+)
 
-DirectiveIdent = $([a-zA-Z0-9_]*)
 DirectiveValueIdent = $([ \'\",\[\]`~!@#$%^&*{}\\a-zA-Z0-9_]*)
-
 EnumIdent = $([a-zA-Z0-9_]*)
 NumberIdent = $([.+-]?[0-9]+([.][0-9]+)?)
 
