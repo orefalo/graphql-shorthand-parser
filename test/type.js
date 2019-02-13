@@ -1,5 +1,5 @@
-import test from "ava";
-import { parse } from "..";
+import test from "ava"
+import { parse } from ".."
 
 test("type definition", t => {
   const [actual] = parse(`
@@ -11,7 +11,7 @@ test("type definition", t => {
       appearsIn: [Episode]
       homePlanet: String
     }
-  `);
+  `)
 
   const expected = {
     type: "TYPE",
@@ -42,10 +42,10 @@ test("type definition", t => {
       }
     },
     implements: ["Character"]
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})
 
 test("type definition with parameters", t => {
   const [actual] = parse(`
@@ -54,7 +54,7 @@ test("type definition with parameters", t => {
       human(id: String!): Human
       droid(id: String!): Droid
     }
-  `);
+  `)
 
   const expected = {
     type: "TYPE",
@@ -87,10 +87,10 @@ test("type definition with parameters", t => {
         }
       }
     }
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})
 
 test("type definition with multiple interfaces", t => {
   const [actual] = parse(`
@@ -101,7 +101,7 @@ test("type definition with multiple interfaces", t => {
       appearsIn: [Episode]
       homePlanet: String
     }
-  `);
+  `)
 
   const expected = {
     type: "TYPE",
@@ -131,16 +131,16 @@ test("type definition with multiple interfaces", t => {
       }
     },
     implements: ["Character", "AnotherThing"]
-  };
-  return t.deepEqual(actual, expected);
-});
+  }
+  return t.deepEqual(actual, expected)
+})
 
 test("type definition with [!]!", t => {
   const [actual] = parse(`
     type Human  {
       friends: [Character!]!
     }
-  `);
+  `)
 
   const expected = {
     type: "TYPE",
@@ -155,17 +155,17 @@ test("type definition with [!]!", t => {
         required: true
       }
     }
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})
 
 test("type definition with [[!]!]", t => {
   const [actual] = parse(`
   type ticTacToe {
     board: [[String!]!]!
   }
-  `);
+  `)
 
   const expected = {
     type: "TYPE",
@@ -184,10 +184,10 @@ test("type definition with [[!]!]", t => {
         required: true
       }
     }
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})
 
 test("type definition with default value", t => {
   const [actual] = parse(`
@@ -196,7 +196,7 @@ test("type definition with default value", t => {
       type: String = "personal-identity-code"
     ): [Identification]!
   }
-  `);
+  `)
 
   const expected = {
     type: "TYPE",
@@ -216,26 +216,24 @@ test("type definition with default value", t => {
         }
       }
     }
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})
 
 test("test EMPTY type", t => {
   const [actual] = parse(`
     type Human  {
     }
-  `);
+  `)
 
   const expected = {
     type: "TYPE",
-    name: "Human",
+    name: "Human"
+  }
 
-  };
-
-  return t.deepEqual(actual, expected);
-});
-
+  return t.deepEqual(actual, expected)
+})
 
 test("comment bug1", t => {
   const [actual] = parse(`
@@ -246,7 +244,7 @@ test("comment bug1", t => {
   
     name: String!
   }  
-  `);
+  `)
 
   const expected = {
     type: "INPUT",
@@ -261,10 +259,10 @@ test("comment bug1", t => {
         required: true
       }
     }
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})
 
 test("comment bug2 default values", t => {
   const [actual] = parse(`
@@ -324,7 +322,7 @@ test("comment bug2 default values", t => {
     membersResourcePath: URI!
   }
   
-  `);
+  `)
 
   const expected = {
     type: "TYPE",
@@ -415,7 +413,7 @@ test("comment bug2 default values", t => {
         description: "The HTTP path for the team' members"
       }
     }
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})

@@ -1,11 +1,11 @@
-import test from "ava";
-import { parse } from "..";
+import test from "ava"
+import { parse } from ".."
 
 test("deprecated on scalar", t => {
   const [actual] = parse(`
   // a test AlphaNumeric deprecation
   scalar AlphaNumeric @deprecated(reason: "killed off AlphaNumeric")  
-  `);
+  `)
 
   const expected = {
     type: "SCALAR",
@@ -17,17 +17,17 @@ test("deprecated on scalar", t => {
         args: 'reason: "killed off AlphaNumeric"'
       }
     ]
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})
 
 test("deprecated on field", t => {
   const [actual] = parse(`
   type Query {
     customerAccount(accountId: String): CustomerAccount @deprecated(reason: "killed off customerAccount")
     }
-  `);
+  `)
 
   const expected = {
     type: "TYPE",
@@ -48,10 +48,10 @@ test("deprecated on field", t => {
         ]
       }
     }
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})
 
 // type ticTacToe {
 //   board: [[String!]!] @list(

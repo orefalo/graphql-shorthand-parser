@@ -1,5 +1,5 @@
-import test from "ava";
-import { parse } from "..";
+import test from "ava"
+import { parse } from ".."
 
 test("parse StarWars schema", t => {
   try {
@@ -104,16 +104,16 @@ test("parse StarWars schema", t => {
         id: ID!
       ): Droid
     }`
-   
-    const  actual= parse(schema);
+
+    const actual = parse(schema)
     //console.log(JSON.stringify(actual, null, 2));
 
-    return t.pass("good");
+    return t.pass("good")
   } catch (e) {
-    console.log(e);
-    return t.throws(e);
+    console.log(e)
+    return t.throws(e)
   }
-});
+})
 
 test("parse Github schema", t => {
   try {
@@ -173,14 +173,14 @@ test("parse Github schema", t => {
       membersResourcePath: URI!
     }
     `
-   
-    const [actual] = parse(schema);
-    return t.pass("good");
+
+    const [actual] = parse(schema)
+    return t.pass("good")
   } catch (e) {
-    console.log(e);
-    return t.throws(e);
+    console.log(e)
+    return t.throws(e)
   }
-});
+})
 
 test("parse Cheatsheet schema", t => {
   try {
@@ -222,13 +222,11 @@ test("parse Cheatsheet schema", t => {
      mutation: Mutation
     }
     `
-   
-    const [actual] = parse(schema);
-    return t.pass("good");
+
+    const [actual] = parse(schema)
+    return t.pass("good")
   } catch (e) {
-    console.log(e);
-    return t.throws(e);
+    console.log(e)
+    return t.throws(e)
   }
-});
-
-
+})

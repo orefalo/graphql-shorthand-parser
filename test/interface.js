@@ -1,5 +1,5 @@
-import test from "ava";
-import { parse } from "..";
+import test from "ava"
+import { parse } from ".."
 
 test("interface definition", t => {
   const [actual] = parse(`
@@ -10,7 +10,7 @@ test("interface definition", t => {
       friends: [Character]
       appearsIn: [Episode]
     }
-  `);
+  `)
 
   const expected = {
     type: "INTERFACE",
@@ -37,10 +37,10 @@ test("interface definition", t => {
         array: true
       }
     }
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})
 
 test("interface definition implements", t => {
   const [actual] = parse(`
@@ -48,7 +48,7 @@ test("interface definition implements", t => {
     interface Lazlo implements Character {
       id: String!
     }
-  `);
+  `)
 
   const expected = {
     type: "INTERFACE",
@@ -58,7 +58,7 @@ test("interface definition implements", t => {
       id: { type: "String", required: true }
     },
     implements: ["Character"]
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})

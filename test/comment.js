@@ -1,23 +1,22 @@
-import test from "ava";
-import { parse } from "..";
+import test from "ava"
+import { parse } from ".."
 
 test("End of file comments", t => {
   const [actual] = parse(`
     # FOO as in Foobar
     enum Bar { FOO }
     # END OF FILE
-  `);
+  `)
 
   const expected = {
     type: "ENUM",
     name: "Bar",
     description: "FOO as in Foobar",
     values: [{ name: "FOO" }]
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
-
+  return t.deepEqual(actual, expected)
+})
 
 test("test multiple single line comments", t => {
   const [actual] = parse(`
@@ -28,104 +27,99 @@ test("test multiple single line comments", t => {
   # START_SECTION_ReactivePlatform
 
     enum Bar { FOO }
-  `);
+  `)
 
   const expected = {
     type: "ENUM",
     name: "Bar",
     description: "name: SnapCore\nauthor Olivier Refalo\ncopyright (c)SnapCore.\nSTART_SECTION_ReactivePlatform",
     values: [{ name: "FOO" }]
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
-
+  return t.deepEqual(actual, expected)
+})
 
 test("special chars in comment description", t => {
   const [actual] = parse(`
     # FOO, is a special (_)!.
     enum Bar { FOO }
-  `);
+  `)
 
   const expected = {
     type: "ENUM",
     name: "Bar",
     description: "FOO, is a special (_)!.",
     values: [{ name: "FOO" }]
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})
 
 test("add '#' comments as description", t => {
   const [actual] = parse(`
     # FOO as in Foobar
     enum Bar { FOO }
-  `);
+  `)
 
   const expected = {
     type: "ENUM",
     name: "Bar",
     description: "FOO as in Foobar",
     values: [{ name: "FOO" }]
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})
 
 test("add '#' comments as description AND EXTRA LINE", t => {
   const [actual] = parse(`
     # FOO as in Foobar
 
     enum Bar { FOO }
-  `);
+  `)
 
   const expected = {
     type: "ENUM",
     name: "Bar",
     description: "FOO as in Foobar",
     values: [{ name: "FOO" }]
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
-
-
+  return t.deepEqual(actual, expected)
+})
 
 test("add '//' comments as description", t => {
   const [actual] = parse(`
     // FOO as in Foobar
     enum Bar { FOO }
-  `);
+  `)
 
   const expected = {
     type: "ENUM",
     name: "Bar",
     description: "FOO as in Foobar",
     values: [{ name: "FOO" }]
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})
 
 test("add '//' comments as description AND EXTRA LINE", t => {
   const [actual] = parse(`
     // FOO as in Foobar
 
     enum Bar { FOO }
-  `);
+  `)
 
   const expected = {
     type: "ENUM",
     name: "Bar",
     description: "FOO as in Foobar",
     values: [{ name: "FOO" }]
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
-
-
+  return t.deepEqual(actual, expected)
+})
 
 test("add '/**/' comments as description", t => {
   const [actual] = parse(`
@@ -133,17 +127,17 @@ test("add '/**/' comments as description", t => {
       FOO as in Foobar
     */
     enum Bar { FOO }
-  `);
+  `)
 
   const expected = {
     type: "ENUM",
     name: "Bar",
     description: "FOO as in Foobar",
     values: [{ name: "FOO" }]
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})
 
 test("add '/**/' comments as description AND EXTRA LINES", t => {
   const [actual] = parse(`
@@ -153,39 +147,37 @@ test("add '/**/' comments as description AND EXTRA LINES", t => {
 
 
     enum Bar { FOO }
-  `);
+  `)
 
   const expected = {
     type: "ENUM",
     name: "Bar",
     description: "FOO as in Foobar",
     values: [{ name: "FOO" }]
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})
 
-
-test("add \"\"\" comments as description", t => {
+test('add """ comments as description', t => {
   const [actual] = parse(`
     """
       FOO as in Foobar
     """
     enum Bar { FOO }
-  `);
+  `)
 
   const expected = {
     type: "ENUM",
     name: "Bar",
     description: "FOO as in Foobar",
     values: [{ name: "FOO" }]
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})
 
-
-test("add \"\"\" comments as description AND EXTRA LINES", t => {
+test('add """ comments as description AND EXTRA LINES', t => {
   const [actual] = parse(`
     """
       FOO as in Foobar
@@ -193,18 +185,17 @@ test("add \"\"\" comments as description AND EXTRA LINES", t => {
 
 
     enum Bar { FOO }
-  `);
+  `)
 
   const expected = {
     type: "ENUM",
     name: "Bar",
     description: "FOO as in Foobar",
     values: [{ name: "FOO" }]
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
-
+  return t.deepEqual(actual, expected)
+})
 
 test("add comments as field description", t => {
   const [actual] = parse(`
@@ -222,7 +213,7 @@ test("add comments as field description", t => {
       /* the home planet */
       homePlanet: String
     }
-  `);
+  `)
 
   const expected = {
     type: "TYPE",
@@ -257,7 +248,7 @@ test("add comments as field description", t => {
       }
     },
     implements: ["Character"]
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})

@@ -1,10 +1,10 @@
-import test from "ava";
-import { parse } from "..";
+import test from "ava"
+import { parse } from ".."
 
 test("directive type", t => {
   const [actual] = parse(`
   directive @auth(roles: [String]) on FIELD_DEFINITION |FIELD
-  `);
+  `)
 
   const expected = {
     type: "DIRECTIVE",
@@ -13,16 +13,16 @@ test("directive type", t => {
       args: "roles: [String]"
     },
     on: ["schema", "query"]
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})
 
 test("directive on scalar", t => {
   const [actual] = parse(`
   // a test AlphaNumeric scalar
   scalar AlphaNumeric @stringValue(regex: "^[0-9a-zA-Z]*$")  
-  `);
+  `)
 
   const expected = {
     type: "SCALAR",
@@ -34,15 +34,15 @@ test("directive on scalar", t => {
         args: 'regex: "^[0-9a-zA-Z]*$"'
       }
     ]
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})
 
 test("directive on include $variable", t => {
   const [actual] = parse(`
     scalar AlphaNumeric @include(if: $show)
-  `);
+  `)
 
   const expected = {
     type: "SCALAR",
@@ -53,15 +53,15 @@ test("directive on include $variable", t => {
         args: "if: $show"
       }
     ]
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})
 
 test("directive with @_", t => {
   const [actual] = parse(`
     scalar AlphaNumeric @_(countBy: "gender")
-  `);
+  `)
 
   const expected = {
     type: "SCALAR",
@@ -72,16 +72,16 @@ test("directive with @_", t => {
         args: 'countBy: "gender"'
       }
     ]
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})
 
 test("directive with []", t => {
   const [actual] = parse(`
     // a test AlphaNumeric scalar
     scalar AlphaNumeric @numberValue( oneOf: [ 1, 2, 4, 8, 16, 32, 64, 128 ]  )
-  `);
+  `)
 
   const expected = {
     type: "SCALAR",
@@ -93,15 +93,15 @@ test("directive with []", t => {
         args: "oneOf: [ 1, 2, 4, 8, 16, 32, 64, 128 ]  "
       }
     ]
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})
 
 test("multiple directives", t => {
   const [actual] = parse(`
     scalar AlphaNumeric @stringValue(oneOf: [" ","X", "O"]) @auth(roles: ["admin"])
-  `);
+  `)
 
   const expected = {
     type: "SCALAR",
@@ -116,15 +116,15 @@ test("multiple directives", t => {
         args: 'roles: ["admin"]'
       }
     ]
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})
 
 test("multiple directives 2", t => {
   const [actual] = parse(`
     scalar AlphaNumeric @upper
-  `);
+  `)
 
   const expected = {
     type: "SCALAR",
@@ -134,17 +134,17 @@ test("multiple directives 2", t => {
         name: "upper"
       }
     ]
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})
 
 test("directive on parametrized field", t => {
   const [actual] = parse(`
   type Query {
     customerAccount(accountId: String): CustomerAccount @auth
     }
-  `);
+  `)
 
   const expected = {
     type: "TYPE",
@@ -164,7 +164,7 @@ test("directive on parametrized field", t => {
         ]
       }
     }
-  };
+  }
 
-  return t.deepEqual(actual, expected);
-});
+  return t.deepEqual(actual, expected)
+})
