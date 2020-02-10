@@ -31,8 +31,8 @@ Enum
     { return clean({ type: "ENUM", name, description, values }); }
 
 Interface
-  = description:CommentList? "interface" SPACES name:TypeIdent implts:(IMPLEMENTS interfacename:TypeList { return interfacename; })? BEGIN_BODY fields:FieldList? CLOSE_BODY
-    { return clean({ type: "INTERFACE", name, description, fields, implements:implts }); }
+  = description:CommentList? "interface" SPACES name:TypeIdent implts:(IMPLEMENTS interfacename:TypeList { return interfacename; })? directives:(SPACES d:DirectiveList  {return d;})? BEGIN_BODY fields:FieldList? CLOSE_BODY
+    { return clean({ type: "INTERFACE", name, directives, description, fields, implements:implts }); }
 
 Scalar
   = description:CommentList? "scalar" SPACES name:TypeIdent directives:(SPACES d:DirectiveList  {return d;})? SPACES_EOL*
@@ -43,8 +43,8 @@ Union
     { return clean({ type: "UNION", name, description, values }); }
 
 Type
-  = description:CommentList? "type" SPACES name:TypeIdent implts:(IMPLEMENTS interfacename:TypeList { return interfacename; })? BEGIN_BODY fields:FieldList? CLOSE_BODY
-    { return clean({ type: "TYPE", name, description, fields, implements:implts }); }
+  = description:CommentList? "type" SPACES name:TypeIdent implts:(IMPLEMENTS interfacename:TypeList { return interfacename; })? directives:(SPACES d:DirectiveList  {return d;})? BEGIN_BODY fields:FieldList? CLOSE_BODY
+    { return clean({ type: "TYPE", name, directives, description, fields, implements:implts }); }
 
 Schema
   = description:CommentList? "schema" BEGIN_BODY fields:FieldList CLOSE_BODY

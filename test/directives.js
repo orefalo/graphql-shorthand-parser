@@ -168,3 +168,38 @@ test("directive on parametrized field", t => {
 
   return t.deepEqual(actual, expected)
 })
+
+test("directive on type", t => {
+  const [actual] = parse(`
+  type Customer @rootEntity {
+    customerAccount(accountId: String): CustomerAccount @auth
+    }
+  `)
+
+  const expected = {
+    type: "TYPE",
+    name: "Customer",
+    directives: [
+      {
+        name: "rootEntity"
+      }
+    ],
+    fields: {
+      customerAccount: {
+        type: "CustomerAccount",
+        args: {
+          accountId: {
+            type: "String"
+          }
+        },
+        directives: [
+          {
+            name: "auth"
+          }
+        ]
+      }
+    }
+  }
+
+  return t.deepEqual(actual, expected)
+})
